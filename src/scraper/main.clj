@@ -23,31 +23,40 @@
 (defn parse-extractor [str]
   (apply comp (reverse (map keyword (split-by-space str)))))
 
-(defn parse-selector [selector-def]
+(defn parse-selector [str]
+  (into [] (map parse-selector-word (split-by-space str))))
+
+(defn parse-field-scraper [selector-def]
   {:name (:name selector-def)
-   :path (into [] (map parse-selector-word (split-by-space (:path selector-def))))
+   :path (parse-selector (:path selector-def))
    :extractor (parse-extractor (:extractor selector-def))})
 
-(def selectors
-  (map parse-selector (:fields template)))
+(defn parse-scraper [template]
+  {:items (parse-selector (:items template))
+   :fields (map parse-field-scraper (:fields template))})
 
-(defn scrape-field [html selector]
-  (let [path (:path selector)
-        extract (:extractor selector)]
-    {(:name selector) (first (flatten (map extract (html/select html path))))}))
+(def scraper
+  (parse-scraper template))
+
+(defn scrape-field [html field-scraper]
+  (let [path (:path field-scraper)
+        extract (:extractor field-scraper)]
+    {(:name field-scraper) (first (flatten (map extract (html/select html path))))}))
 
 (defn scrape-item [item]
-  (map #(scrape-field item %) selectors))
+  (map #(scrape-field item %) (:fields scraper)))
+
+(defn scrape-items [html]
+  (map scrape-item (html/select html (:items scraper))))
 
 
 ;; draft
 
-(defn fetchit []
+(def html
   (fetch-url *base-url*))
 
-(def items (html/select (fetchit) [:.s-search-results :> :div]))
-
-(def item (first items))
-
 (defn parseit []
-  (scrape-item item))
+  (scrape-items html))
+
+(def printit
+  (doseq [item (parseit)] (doseq [field item] (println field))))
