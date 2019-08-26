@@ -26,14 +26,14 @@
 (defn parse-selector [str]
   (into [] (map parse-selector-word (split-by-space str))))
 
-(defn parse-field-scraper [selector-def]
-  {:name (:name selector-def)
-   :path (parse-selector (:path selector-def))
-   :extractor (parse-extractor (:extractor selector-def))})
+(defn parse-field-scraper [src]
+  {:name (:name src)
+   :path (parse-selector (:path src))
+   :extractor (parse-extractor (:extractor src))})
 
-(defn parse-scraper [template]
-  {:items (parse-selector (:items template))
-   :fields (map parse-field-scraper (:fields template))})
+(defn parse-scraper [src]
+  {:items (parse-selector (:items src))
+   :fields (map parse-field-scraper (:fields src))})
 
 (def scraper
   (parse-scraper template))
@@ -49,14 +49,14 @@
 (defn scrape-items [html]
   (map scrape-item (html/select html (:items scraper))))
 
+(defn format [items]
+  (doseq [item items]
+    (doseq [field item]
+      (println field))))
 
-;; draft
 
 (def html
   (fetch-url *base-url*))
 
-(defn parseit []
-  (scrape-items html))
-
-(def printit
-  (doseq [item (parseit)] (doseq [field item] (println field))))
+(def scrape-and-print
+  (format (scrape-items html)))
