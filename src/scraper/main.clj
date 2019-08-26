@@ -21,18 +21,20 @@
       (keyword str))))
 
 (defn parse-extractor [str]
-  (comp (reverse (map keyword (split-by-space str)))))
+  (apply comp (reverse (map keyword (split-by-space str)))))
 
 (defn parse-selector [selector-def]
   {:name (:name selector-def)
-   :select-keys (into [] (map parse-selector-word (split-by-space (:path selector-def))))
-   :extract-fn (parse-extractor (:extractor selector-def))})
+   :path (into [] (map parse-selector-word (split-by-space (:path selector-def))))
+   :extractor (parse-extractor (:extractor selector-def))})
 
 (def selectors
   (map parse-selector (:fields template)))
 
 (defn parse-field [html selector]
-  (html/select html (:select-keys selector)))
+  (let [path (:path selector)
+        extract (:extractor selector)]
+    (map extract (html/select html path))))
 
 
 ;; draft
@@ -45,6 +47,6 @@
 (def item (first items))
 
 (defn parseit []
-  (let [html fetchit
+  (let [html (fetchit)
         sel selectors]
-    (parse-field html (first sel))))
+    (parse-field html (nth sel 2))))
