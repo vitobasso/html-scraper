@@ -1,4 +1,4 @@
-items: '.s-search-results > div:nth-child(*)'
+items: '.s-search-results > div'
 fields:
   - name: 'name'
     path: 'div > div > div > div:nth-child(2) > div:nth-child(2) > div > div.a-section.a-spacing-none.a-spacing-top-small > h2 > a > span'
