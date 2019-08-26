@@ -14,7 +14,7 @@
 (defn split-by-space [str]
   (clojure.string/split str #" "))
 
-(defn parse-selector-word [str]
+(defn parse-selector-word [str] ;; TODO handle tag.class (intersection) and other tag:function
   (let [[matches tag num] (re-find #"(.*):nth-child\((\d+)\)" str)]
     (if matches
       [(keyword tag) (html/nth-child (Integer/parseInt num))]
@@ -31,10 +31,13 @@
 (def selectors
   (map parse-selector (:fields template)))
 
-(defn parse-field [html selector]
+(defn scrape-field [html selector]
   (let [path (:path selector)
         extract (:extractor selector)]
-    (map extract (html/select html path))))
+    {(:name selector) (first (flatten (map extract (html/select html path))))}))
+
+(defn scrape-item [item]
+  (map #(scrape-field item %) selectors))
 
 
 ;; draft
@@ -42,11 +45,9 @@
 (defn fetchit []
   (fetch-url *base-url*))
 
-(def items (html/select html [:.s-search-results :> :div]))
+(def items (html/select (fetchit) [:.s-search-results :> :div]))
 
 (def item (first items))
 
 (defn parseit []
-  (let [html (fetchit)
-        sel selectors]
-    (parse-field html (nth sel 2))))
+  (scrape-item item))
