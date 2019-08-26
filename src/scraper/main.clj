@@ -17,7 +17,7 @@
 (defn parse-selector-word [str]
   (let [[matches tag num] (re-find #"(.*):nth-child\((\d+)\)" str)]
     (if matches
-      [(keyword tag) (html/nth-of-type num)]
+      [(keyword tag) (html/nth-child (Integer/parseInt num))]
       (keyword str))))
 
 (defn parse-extractor [str]
@@ -25,7 +25,7 @@
 
 (defn parse-selector [selector-def]
   {:name (:name selector-def)
-   :select-keys (map parse-selector-word (split-by-space (str (:items template) " " (:path selector-def))))
+   :select-keys (into [] (map parse-selector-word (split-by-space (:path selector-def))))
    :extract-fn (parse-extractor (:extractor selector-def))})
 
 (def selectors
