@@ -14,15 +14,21 @@
 (defn split-by-space [str]
   (clojure.string/split str #" "))
 
-(defn parse-keywords [str]
-  (map keyword (split-by-space str)))
+(defn parse-words [parser str]
+  (map parser (split-by-space str)))
+
+(defn parse-selector-word [str]
+  (let [[matches tag num] (re-find #"(.*):nth-child\((\d+)\)" str)]
+    (if matches
+      [(keyword tag) (html/nth-of-type num)]
+      (keyword str))))
 
 (defn parse-extractor [str]
-  (comp (reverse (parse-keywords str))))
+  (comp (reverse (parse-words keyword str))))
 
 (defn parse-selector [selector-def]
   { :name (:name selector-def)
-    :select-keys (parse-keywords (str (:items template) " " (:path selector-def)))
+    :select-keys (parse-words parse-selector-word (str (:items template) " " (:path selector-def)))
     :extract-fn (parse-extractor (:extractor selector-def))})
 
 (def selectors
