@@ -49,14 +49,14 @@
 (defn scrape-items [html]
   (map scrape-item (html/select html (:items scraper))))
 
-(defn format [items]
+(defn print-items [items]
   (doseq [item items]
     (doseq [field item]
       (println field))))
 
 
-(def html
-  (fetch-url *base-url*))
-
-(def scrape-and-print
-  (format (scrape-items html)))
+;(def html
+;  (fetch-url *base-url*))
+;
+;(def scrape-and-print
+;  (print-items (scrape-items html)))

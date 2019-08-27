@@ -1,5 +1,5 @@
 target/
-.lein-repl-history
+.lein-*
 .nrepl-port
 
 #intellij
