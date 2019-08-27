@@ -1,6 +1,6 @@
-(ns scraper.main-test
+(ns scraper.template-parsing-test
   (:require [clojure.test :refer :all]
-            [scraper.main :refer :all]))
+            [scraper.template-parsing :refer :all]))
 
 (deftest test-parse-selector-word
   (testing "single tag"

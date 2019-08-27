@@ -1,4 +1,5 @@
 (ns scraper.main
+    (:require [scraper.template-parsing :as template-parsing])
     (:require [yaml.core :as yaml])
     (:require [clj-http.client :as client])
     (:require [net.cgrand.enlive-html :as html]))
@@ -11,32 +12,8 @@
 
 (def template (yaml/from-file "templates/amazon-co-uk.yml"))
 
-(defn split-by-space [str]
-  (clojure.string/split str #" "))
-
-(defn parse-selector-word [str] ;; TODO handle tag.class (intersection) and other tag:function
-  (let [[matches tag num] (re-find #"(.*):nth-child\((\d+)\)" str)]
-    (if matches
-      [(keyword tag) (html/nth-child (Integer/parseInt num))]
-      (keyword str))))
-
-(defn parse-extractor [str]
-  (apply comp (reverse (map keyword (split-by-space str)))))
-
-(defn parse-selector [str]
-  (into [] (map parse-selector-word (split-by-space str))))
-
-(defn parse-field-scraper [src]
-  {:name (:name src)
-   :path (parse-selector (:path src))
-   :extractor (parse-extractor (:extractor src))})
-
-(defn parse-scraper [src]
-  {:items (parse-selector (:items src))
-   :fields (map parse-field-scraper (:fields src))})
-
 (def scraper
-  (parse-scraper template))
+  (template-parsing/parse-scraper template))
 
 (defn scrape-field [html field-scraper]
   (let [path (:path field-scraper)
@@ -55,8 +32,8 @@
       (println field))))
 
 
-;(def html
-;  (fetch-url *base-url*))
-;
-;(def scrape-and-print
-;  (print-items (scrape-items html)))
+(def html
+  (fetch-url *base-url*))
+
+(def scrape-and-print
+  (print-items (scrape-items html)))
