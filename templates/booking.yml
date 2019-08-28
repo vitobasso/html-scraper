@@ -1,3 +1,4 @@
+search: 'https://www.booking.com/searchresults.en-us.html?ss=$SEARCH_TERM&rows=$ITEMS_PER_PAGE&offset=$PAGE_OFFSET'
 items: '#search_results_table .sr_item'
 fields:
   - name: 'name'
@@ -9,6 +10,9 @@ fields:
   - name: 'url'
     path: '.hotel_name_link'
     extractor: 'attrs href'
+  - name: 'price'
+    path: '.bui-price-display__value'
+    extractor: 'content'
   - name: 'reviews'
     path: '.bui-review-score__badge'
     extractor: 'content'
