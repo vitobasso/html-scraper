@@ -10,10 +10,10 @@
       (println field))))
 
 (def config
-  (scraping/parse-scraper (yaml/from-file "templates/amazon-co-uk.yml")))
+  (scraping/parse-scraper (yaml/from-file "templates/booking.yml")))
 
-(defn page [search-term number]
-  (print-items (scraping/scrape-page search-term number config)))
+(defn page [search-term page-number]
+  (print-items (scraping/scrape-page search-term page-number config)))
 
 ; uncomment to try manual scraping from repl
 ;(def base-url "https://www.amazon.co.uk/s?k=$SEARCH_TERM&page=$PAGE")

@@ -20,13 +20,12 @@
 
 (defn url-for-page [url-template search-term page-number]
   (let [items-per-page 25 ;; TODO get from config
-        page-number-str (str page-number)
         page-offset (* page-number items-per-page)]
     (-> url-template
         (string/replace #"\$\{SEARCH_TERM\}" search-term)
-        (string/replace #"\$\{PAGE_NUMBER\}" page-number-str)
-        (string/replace #"\$\{ITEMS_PER_PAGE\}" items-per-page)
-        (string/replace #"\$\{PAGE_OFFSET\}" page-offset))))
+        (string/replace #"\$\{PAGE_NUMBER\}" (str page-number))
+        (string/replace #"\$\{ITEMS_PER_PAGE\}" (str items-per-page))
+        (string/replace #"\$\{PAGE_OFFSET\}" (str page-offset)))))
 
 (defn scrape-page [search-term page-number config]
   (let [url-template (:search-url config)
