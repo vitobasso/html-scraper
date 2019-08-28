@@ -7,20 +7,20 @@
 (defn parse-scraper [template]
   (template-parsing/parse-scraper template))
 
-(defn scrape-field [html scraper]
-  (let [path (:path scraper)
-        extract (:extractor scraper)]
-    {(:name scraper) (first (flatten (map extract (html/select html path))))}))
+(defn scrape-field [html config]
+  (let [path (:path config)
+        extract (:extractor config)]
+    {(:name config) (first (flatten (map extract (html/select html path))))}))
 
-(defn scrape-item [item scraper]
-  (map #(scrape-field item %) (:fields scraper)))
+(defn scrape-item [item config]
+  (map #(scrape-field item %) (:fields config)))
 
-(defn scrape-items [html scraper]
-  (map #(scrape-item % scraper) (html/select html (:items scraper))))
+(defn scrape-items [html config]
+  (map #(scrape-item % config) (html/select html (:items config))))
 
-(defn scrape-page [page-number scraper]
-  (let [url-template (:search-url scraper)
+(defn scrape-page [page-number config]
+  (let [url-template (:search-url config)
         url (string/replace url-template #"\$\{PAGE_NUMBER\}" page-number)
         response-body (:body (client/get url))
         parsed-html (html/html-snippet response-body)]
-    (scrape-items parsed-html scraper)))
+    (scrape-items parsed-html config)))

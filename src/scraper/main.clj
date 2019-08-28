@@ -9,14 +9,11 @@
     (doseq [field item]
       (println field))))
 
-(def template
-  (yaml/from-file "templates/amazon-co-uk.yml"))
-
-(def scraper
-  (scraping/parse-scraper template))
+(def config
+  (scraping/parse-scraper (yaml/from-file "templates/amazon-co-uk.yml")))
 
 (defn page [number]
-  (print-items (scraping/scrape-page (str number) scraper)))
+  (print-items (scraping/scrape-page (str number) config)))
 
 ; uncomment to try manual scraping from repl
 ;(def base-url "https://www.amazon.co.uk/s?k=$SEARCH_TERM&page=$PAGE")
