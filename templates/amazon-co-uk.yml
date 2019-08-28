@@ -3,7 +3,7 @@ fields:
   - name: 'name'
     path: 'span.a-text-normal'
     extractor: 'content'
-  - name: 'photo'
+  - name: 'image'
     path: '.s-image'
     extractor: 'attrs src'
   - name: 'url'

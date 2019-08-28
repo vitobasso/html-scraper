@@ -1,7 +1,0 @@
-items: '.s-search-results div:nth-child(*)'
-fields:
-  name: 'div div div div:nth-child(2) div:nth-child(2) div div.a-section.a-spacing-none.a-spacing-top-small h2 a span text{}'
-  photo: 'div div div div:nth-child(2) div:nth-child(1) div div span a div img attr{src}'
-  url: 'div div div div:nth-child(2) div:nth-child(1) div div span a attr{href}'
-  price: '.a-price .a-offscreen text{}'
-  
