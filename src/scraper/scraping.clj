@@ -7,10 +7,18 @@
 (defn parse-scraper [template]
   (template-parsing/parse-config template))
 
-(defn scrape-field [html config]
+(defn trim-value [maybe-value]
+  (if (some? maybe-value) (string/trim maybe-value) maybe-value))
+
+(defn scrape-field [full-html config]
   (let [path (:path config)
-        extract (:extractor config)]
-    {(:name config) (first (flatten (map extract (html/select html path))))}))
+        extract (:extractor config)
+        item-html (html/select full-html path)
+        value (-> (map extract item-html)
+                  (flatten)
+                  (first)
+                  (trim-value))]
+    {(:name config) value}))
 
 (defn scrape-item [item config]
   (map #(scrape-field item %) (:fields config)))

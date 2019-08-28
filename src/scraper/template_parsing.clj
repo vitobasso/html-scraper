@@ -1,8 +1,10 @@
 (ns scraper.template-parsing
-    (:require [net.cgrand.enlive-html :as html]))
+    (:require [net.cgrand.enlive-html :as html])
+    (:require [clojure.string :as string])
+  )
 
 (defn split-by-space [str]
-  (clojure.string/split str #" "))
+  (string/split str #" "))
 
 (defn parse-selector-word [str] ;; TODO handle tag.class (intersection) and other tag:function
   (let [[matches tag num] (re-find #"(.*):nth-child\((\d+)\)" str)]
