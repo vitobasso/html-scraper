@@ -16,12 +16,12 @@
 (defn parse-selector [str]
   (into [] (map parse-selector-word (split-by-space str))))
 
-(defn parse-field-scraper [src]
+(defn parse-field-config [src]
   {:name (:name src)
    :path (parse-selector (:path src))
    :extractor (parse-extractor (:extractor src))})
 
-(defn parse-scraper [src]
+(defn parse-config [src]
   {:search-url (:search-url src)
    :items (parse-selector (:items src))
-   :fields (map parse-field-scraper (:fields src))})
+   :fields (map parse-field-config (:fields src))})

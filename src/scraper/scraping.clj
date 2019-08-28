@@ -5,7 +5,7 @@
     (:require [clj-http.client :as client]))
 
 (defn parse-scraper [template]
-  (template-parsing/parse-scraper template))
+  (template-parsing/parse-config template))
 
 (defn scrape-field [html config]
   (let [path (:path config)
