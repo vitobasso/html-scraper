@@ -1,4 +1,4 @@
-search: 'https://www.amazon.co.uk/s?k=$SEARCH_TERM&page=$PAGE'
+search-url: 'https://www.amazon.co.uk/s?k=${SEARCH_TERM}&page=${PAGE_NUMBER}'
 items: '.s-result-list > div'
 fields:
   - name: 'name'

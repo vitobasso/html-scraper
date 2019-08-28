@@ -1,4 +1,4 @@
-search: 'https://www.booking.com/searchresults.en-us.html?ss=$SEARCH_TERM&rows=$ITEMS_PER_PAGE&offset=$PAGE_OFFSET'
+search-url: 'https://www.booking.com/searchresults.en-us.html?ss=${SEARCH_TERM}&rows=${ITEMS_PER_PAGE}&offset=${PAGE_OFFSET}'
 items: '#search_results_table .sr_item'
 fields:
   - name: 'name'

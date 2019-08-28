@@ -22,5 +22,6 @@
    :extractor (parse-extractor (:extractor src))})
 
 (defn parse-scraper [src]
-  {:items (parse-selector (:items src))
+  {:search-url (:search-url src)
+   :items (parse-selector (:items src))
    :fields (map parse-field-scraper (:fields src))})
