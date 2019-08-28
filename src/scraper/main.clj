@@ -12,8 +12,8 @@
 (def config
   (scraping/parse-scraper (yaml/from-file "templates/amazon-co-uk.yml")))
 
-(defn page [number]
-  (print-items (scraping/scrape-page (str number) config)))
+(defn page [search-term number]
+  (print-items (scraping/scrape-page search-term number config)))
 
 ; uncomment to try manual scraping from repl
 ;(def base-url "https://www.amazon.co.uk/s?k=$SEARCH_TERM&page=$PAGE")

@@ -21,7 +21,7 @@
    :path (parse-selector (:path src))
    :extractor (parse-extractor (:extractor src))})
 
-(defn parse-config [src]
+(defn parse-config [src] ;; TODO validate paging params
   {:search-url (:search-url src)
    :items (parse-selector (:items src))
    :fields (map parse-field-config (:fields src))})

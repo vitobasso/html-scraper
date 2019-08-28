@@ -18,9 +18,19 @@
 (defn scrape-items [html config]
   (map #(scrape-item % config) (html/select html (:items config))))
 
-(defn scrape-page [page-number config]
+(defn url-for-page [url-template search-term page-number]
+  (let [items-per-page 25 ;; TODO get from config
+        page-number-str (str page-number)
+        page-offset (* page-number items-per-page)]
+    (-> url-template
+        (string/replace #"\$\{SEARCH_TERM\}" search-term)
+        (string/replace #"\$\{PAGE_NUMBER\}" page-number-str)
+        (string/replace #"\$\{ITEMS_PER_PAGE\}" items-per-page)
+        (string/replace #"\$\{PAGE_OFFSET\}" page-offset))))
+
+(defn scrape-page [search-term page-number config]
   (let [url-template (:search-url config)
-        url (string/replace url-template #"\$\{PAGE_NUMBER\}" page-number)
+        url (url-for-page url-template search-term page-number)
         response-body (:body (client/get url))
         parsed-html (html/html-snippet response-body)]
     (scrape-items parsed-html config)))
