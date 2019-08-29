@@ -10,10 +10,10 @@
 (defn trim-value [maybe-value]
   (if (some? maybe-value) (string/trim maybe-value) maybe-value))
 
-(defn scrape-field [full-html config]
-  (let [path (:path config)
+(defn scrape-attribute [full-html config]
+  (let [selector (:selector config)
         extract (:extractor config)
-        item-html (html/select full-html path)
+        item-html (html/select full-html selector)
         value (-> (map extract item-html)
                   (flatten)
                   (first)
@@ -21,10 +21,10 @@
     {(:name config) value}))
 
 (defn scrape-item [item config]
-  (map #(scrape-field item %) (:fields config)))
+  (map #(scrape-attribute item %) (:attributes config)))
 
 (defn scrape-items [html config]
-  (map #(scrape-item % config) (html/select html (:items config))))
+  (map #(scrape-item % config) (html/select html (:item-selector config))))
 
 (defn interpolate-url [url-template search-term page-number]
   (let [items-per-page 25 ;; TODO get from config

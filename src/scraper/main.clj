@@ -6,8 +6,8 @@
 
 (defn print-items [items]
   (doseq [item items]
-    (doseq [field item]
-      (println field))))
+    (doseq [attribute item]
+      (println attribute))))
 
 (def config
   (scraping/parse-scraper (yaml/from-file "templates/booking.yml")))
