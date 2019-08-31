@@ -1,6 +1,6 @@
-host: 'https://www.booking.com'
+home-url: 'https://www.booking.com'
 list-page:
-  url: '/searchresults.en-us.html?ss=${SEARCH_TERM}&rows=${ITEMS_PER_PAGE}&offset=${PAGE_OFFSET}'
+  url-path: '/searchresults.en-us.html?ss=${SEARCH_TERM}&rows=${ITEMS_PER_PAGE}&offset=${PAGE_OFFSET}'
   item-selector: '#search_results_table .sr_item'
   attributes:
     - name: 'name'

@@ -1,6 +1,6 @@
-host: 'https://www.amazon.co.uk'
+home-url: 'https://www.amazon.co.uk'
 list-page:
-  url: '/s?k=${SEARCH_TERM}&page=${PAGE_NUMBER}'
+  url-path: '/s?k=${SEARCH_TERM}&page=${PAGE_NUMBER}'
   item-selector: '.s-result-list > div'
   attributes:
     - name: 'name'
