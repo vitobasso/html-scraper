@@ -10,4 +10,7 @@
   (testing "tag with nth-child"
     (let [[tag fun] (parse-selector-word "div:nth-child(1)")]
       (is (= :div tag) (function? fun))))
+  (testing "tag with attr-starts"
+    (let [[tag fun] (parse-selector-word "img[src^=bla]")]
+      (is (= :img tag) (function? fun))))
   )

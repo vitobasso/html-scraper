@@ -5,11 +5,18 @@
 (defn- split-by-space [str]
   (string/split str #" "))
 
-(defn parse-selector-word [str] ;; TODO handle tag.class (intersection) and other tag:function
-  (let [[matches tag num] (re-find #"(.*):nth-child\((\d+)\)" str)]
+(defn- parse-nth-child [str]
+  (let [[matches tag num] (re-find #"^(.*):nth-child\((\d+)\)$" str)]
     (if matches
-      [(keyword tag) (html/nth-child (Integer/parseInt num))]
-      (keyword str))))
+      [(keyword tag) (html/nth-child (Integer/parseInt num))])))
+
+(defn- parse-attr-starts [str]
+  (let [[matches tag attr value] (re-find #"^(\w*)\[(\w+)\^=(.+)\]$" str)]
+    (if matches
+      [(keyword tag) (html/attr-starts (keyword attr) value)])))
+
+(defn parse-selector-word [str] ;; TODO handle tag.class (intersection) and other tag:function
+  (some #(% str) [parse-nth-child parse-attr-starts keyword]))
 
 (defn- parse-extractor [str]
   (apply comp (reverse (map keyword (split-by-space str)))))
