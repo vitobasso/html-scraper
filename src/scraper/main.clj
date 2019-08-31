@@ -15,8 +15,8 @@
 (defn page [search-term page-number]
   (print-items (scraping/scrape-list search-term page-number config)))
 
-(defn detail [url-path]
-  (print-items (scraping/scrape-detail url-path config)))
+(defn detail [item]
+  (print-items (scraping/scrape-detail item config)))
 
 ; uncomment to try manual scraping from repl
 ;(def base-url "https://www.amazon.co.uk/s?k=$SEARCH_TERM&page=$PAGE")

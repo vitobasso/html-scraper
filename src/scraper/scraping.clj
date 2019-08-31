@@ -26,25 +26,34 @@
 (defn scrape-items [html config]
   (map #(scrape-item % config) (html/select html (:item-selector config))))
 
-(defn interpolate-url [url-template search-term page-number]
+(defn replace-var [str-template [key value]]
+  (let [pattern (re-pattern (str "\\$\\{" (name key) "\\}"))]
+    (string/replace str-template pattern value)))
+
+(defn replace-vars [str-template var-map]
+  (reduce replace-var str-template var-map))
+
+(defn build-search-url [url-template search-term page-number]
   (let [items-per-page 25 ;; TODO get from config
-        page-offset (* (- page-number 1) items-per-page)]
-    (-> url-template
-        (string/replace #"\$\{SEARCH_TERM\}" search-term)
-        (string/replace #"\$\{PAGE_NUMBER\}" (str page-number))
-        (string/replace #"\$\{ITEMS_PER_PAGE\}" (str items-per-page))
-        (string/replace #"\$\{PAGE_OFFSET\}" (str page-offset)))))
+        page-offset (* (- page-number 1) items-per-page)
+        vars {"SEARCH_TERM" search-term
+              "PAGE_NUMBER" (str page-number)
+              "ITEMS_PER_PAGE" (str items-per-page)
+              "PAGE_OFFSET" (str page-offset)}]
+    (replace-vars url-template vars)))
 
 (defn scrape-list [search-term page-number config]
   (let [list-config (:list-page config)
-        url-template (:search-url list-config)
-        url (interpolate-url url-template search-term page-number)
+        url-template (:url list-config)
+        url (build-search-url url-template search-term page-number)
         response-body (:body (client/get url))
         parsed-html (html/html-snippet response-body)]
     (scrape-items parsed-html list-config)))
 
-(defn scrape-detail [url-path config]
-  (let [url (str (:home-url config) url-path)
+(defn scrape-detail [item config]
+  (let [detail-config (:detail-page config)
+        url-template (str (:home-url config) (:url-path detail-config))
+        url (replace-vars url-template item)
         response-body (:body (client/get url))
         parsed-html (html/html-snippet response-body)]
-    (scrape-item parsed-html (:detail-page config))))
+    (scrape-item parsed-html detail-config)))

@@ -34,11 +34,13 @@
 
 (defn parse-config [src] ;; TODO validate paging params
   (let [list-page (:list-page src)
-        detail-page (:detail-page src)]
+        detail-page (:detail-page src)
+        get-url #(str (:home-url src) (:url-path %))]
     {:home-url (:home-url src)
      :list-page {
-       :search-url (str (:home-url src) (:url-path list-page))
+       :url (get-url list-page)
        :item-selector (parse-selector (:item-selector list-page))
        :attributes (parse-attributes list-page)}
      :detail-page {
+       :url (get-url detail-page)
        :attributes (parse-attributes detail-page)}}))

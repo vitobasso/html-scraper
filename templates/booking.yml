@@ -22,6 +22,7 @@ list-page:
       selector: '.sr_card_address_line > a.bui-link'
       extractor: 'content'
 detail-page:
+  url-path: '${url}'
   attributes:
     - name: 'address'
       selector: '.hp_address_subtitle'
