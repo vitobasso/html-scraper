@@ -2,7 +2,7 @@
     (:require [net.cgrand.enlive-html :as html])
     (:require [clojure.string :as string]))
 
-(defn split-by-space [str]
+(defn- split-by-space [str]
   (string/split str #" "))
 
 (defn parse-selector-word [str] ;; TODO handle tag.class (intersection) and other tag:function
@@ -11,19 +11,27 @@
       [(keyword tag) (html/nth-child (Integer/parseInt num))]
       (keyword str))))
 
-(defn parse-extractor [str]
+(defn- parse-extractor [str]
   (apply comp (reverse (map keyword (split-by-space str)))))
 
-(defn parse-selector [str]
+(defn- parse-selector [str]
   (into [] (map parse-selector-word (split-by-space str))))
 
-(defn parse-attribute-config [src]
+(defn- parse-attribute-config [src]
   {:name (:name src)
    :selector (parse-selector (:selector src))
    :extractor (parse-extractor (:extractor src))})
 
+(defn- parse-attributes-config [src]
+  (map parse-attribute-config (:attributes src)))
+
 (defn parse-config [src] ;; TODO validate paging params
-  (let [list-page (:list-page src)]
-    {:search-url (str (:host src) (:url list-page))
-     :item-selector (parse-selector (:item-selector list-page))
-     :attributes (map parse-attribute-config (:attributes list-page))}))
+  (let [list-page (:list-page src)
+        detail-page (:detail-page src)]
+    {:home-url (:host src)
+     :list-page {
+       :search-url (str (:host src) (:url list-page))
+       :item-selector (parse-selector (:item-selector list-page))
+       :attributes (parse-attributes-config list-page)}
+     :detail-page {
+       :attributes (parse-attributes-config detail-page)}}))

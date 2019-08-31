@@ -35,9 +35,16 @@
         (string/replace #"\$\{ITEMS_PER_PAGE\}" (str items-per-page))
         (string/replace #"\$\{PAGE_OFFSET\}" (str page-offset)))))
 
-(defn scrape-page [search-term page-number config]
-  (let [url-template (:search-url config)
+(defn scrape-list [search-term page-number config]
+  (let [list-config (:list-page config)
+        url-template (:search-url list-config)
         url (interpolate-url url-template search-term page-number)
         response-body (:body (client/get url))
         parsed-html (html/html-snippet response-body)]
-    (scrape-items parsed-html config)))
+    (scrape-items parsed-html list-config)))
+
+(defn scrape-detail [url-path config]
+  (let [url (str (:home-url config) url-path)
+        response-body (:body (client/get url))
+        parsed-html (html/html-snippet response-body)]
+    (scrape-item parsed-html (:detail-page config))))
