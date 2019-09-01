@@ -18,14 +18,37 @@
   )
 
 (deftest test-regex-extract
-  (testing "extract one part"
+  (testing "extract one thing"
     (is (= "£10"
            (regex-extract "it costs 10 pounds" {:find "\\D*(\\d+)\\D*" :replace "£${1}"}))))
-  (testing "extract two parts"
+  (testing "extract two things"
     (is (= "£10.50"
            (regex-extract "it costs 10 pounds and 50 pence" {:find "\\D*(\\d+)\\D*(\\d+)\\D*" :replace "£${1}.${2}"}))))
   (testing "if no config, bypass"
     (is (= "bla bla"
            (regex-extract "bla bla" nil))))
   ;;TODO escaped $
+  ;;TODO config missing :find or :replace
+  )
+
+(deftest test-replace-vars
+  (testing "replace two vars"
+    (is (= "I love my cat too much"
+           (replace-vars "I love my ${pet} ${amount}" {:pet "cat" :amount "too much"}))))
+  (testing "if wrong keys, do nothing"
+    (is (= "I love my ${pet}"
+           (replace-vars "I love my ${pet}" {:human "Abraham Lincoln"}))))
+  ;;TODO nil config
+  )
+
+(deftest test-replace-indexes
+  (testing "replace two place holders"
+    (is (= "I love my cat and my other cat"
+           (replace-indexes "I love my ${1} and my ${2}" ["cat" "other cat"]))))
+  (testing "if missing values, replace as far as possible"
+    (is (= "I love my cat and my ${2}"
+           (replace-indexes "I love my ${1} and my ${2}" ["cat"]))))
+  (testing "if nil values, do nothing"
+    (is (= "I love my ${1} and my ${2}"
+           (replace-indexes "I love my ${1} and my ${2}" nil))))
   )
