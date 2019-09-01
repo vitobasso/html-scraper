@@ -10,14 +10,34 @@
 (defn trim-value [maybe-value]
   (if (some? maybe-value) (string/trim maybe-value) maybe-value))
 
+(defn replace-var [str-template [key value]]
+  (let [pattern (re-pattern (str "\\$\\{" (name key) "\\}"))]
+    (string/replace str-template pattern value)))
+
+(defn replace-vars [str-template var-map]
+  (reduce replace-var str-template var-map))
+
+(defn replace-indexes [str-template values]
+  (let [into-key (comp keyword str)
+        counting-keys (map into-key (rest (range)))
+        var-map (zipmap counting-keys values)]
+    (replace-vars str-template var-map)))
+
+(defn regex-extract [value config]
+  (if config
+    (let [pattern (re-pattern (:find config))
+          [_ & groups] (re-find pattern value)
+          template (:replace config)]
+      (replace-indexes template groups))
+    value))
+
 (defn scrape-attribute [full-html config]
-  (let [selector (:selector config)
-        extract (:extractor config)
-        item-html (html/select full-html selector)
-        value (-> (map extract item-html)
+  (let [item-html (html/select full-html (:selector config))
+        value (-> (map (:extractor config) item-html)
                   (flatten)
                   (first)
-                  (trim-value))]
+                  (trim-value)
+                  (regex-extract (:regex config)))]
     {(:name config) value}))
 
 (defn scrape-item [item config]
@@ -25,13 +45,6 @@
 
 (defn scrape-items [html config]
   (map #(scrape-item % config) (html/select html (:item-selector config))))
-
-(defn replace-var [str-template [key value]]
-  (let [pattern (re-pattern (str "\\$\\{" (name key) "\\}"))]
-    (string/replace str-template pattern value)))
-
-(defn replace-vars [str-template var-map]
-  (reduce replace-var str-template var-map))
 
 (defn build-search-url [url-template search-term page-number]
   (let [items-per-page 25 ;; TODO get from config

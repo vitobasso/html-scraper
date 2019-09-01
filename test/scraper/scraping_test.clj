@@ -2,7 +2,7 @@
   (:require [clojure.test :refer :all]
             [scraper.scraping :refer :all]))
 
-(deftest test-interpolate-url
+(deftest test-build-search-url
   (testing "page number"
     (is (= "http://site.com?k=product&p=1"
            (build-search-url "http://site.com?k=${SEARCH_TERM}&p=${PAGE_NUMBER}" "product" 1))))
@@ -15,4 +15,17 @@
   ;;TODO invalid template
   ;;TODO zero and negative page
   ;;TODO non int page
+  )
+
+(deftest test-regex-extract
+  (testing "extract one part"
+    (is (= "£10"
+           (regex-extract "it costs 10 pounds" {:find "\\D*(\\d+)\\D*" :replace "£${1}"}))))
+  (testing "extract two parts"
+    (is (= "£10.50"
+           (regex-extract "it costs 10 pounds and 50 pence" {:find "\\D*(\\d+)\\D*(\\d+)\\D*" :replace "£${1}.${2}"}))))
+  (testing "if no config, bypass"
+    (is (= "bla bla"
+           (regex-extract "bla bla" nil))))
+  ;;TODO escaped $
   )

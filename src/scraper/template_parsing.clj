@@ -27,7 +27,8 @@
 (defn- parse-attribute [src]
   {:name (:name src)
    :selector (parse-selector (:selector src))
-   :extractor (parse-extractor (:extractor src))})
+   :extractor (parse-extractor (:extractor src))
+   :regex (:regex src)})
 
 (defn- parse-attributes [src]
   (map parse-attribute (:attributes src)))
