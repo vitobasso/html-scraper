@@ -27,6 +27,7 @@
   (testing "if no config, bypass"
     (is (= "bla bla"
            (regex-extract "bla bla" nil))))
+  ;;TODO mismatch
   ;;TODO escaped $
   ;;TODO config missing :find or :replace
   )

@@ -19,9 +19,11 @@
   (print-items (scraping/scrape-detail item config)))
 
 ; uncomment to try manual scraping from repl
-;(def base-url "https://www.amazon.co.uk/s?k=$SEARCH_TERM&page=$PAGE")
-;(defn fetch-url [url] (html/html-snippet (:body (client/get url))))
-;(def html (fetch-url base-url))
-;(def items (html/select html (:items scraper)))
+;(def list-config (:list-page config))
+;(def url-template (:url list-config))
+;(def url (scraping/build-search-url url-template "london" 1))
+;(def html (html/html-snippet (:body (client/get url))))
+;(def items (html/select html  (:item-selector list-config)))
 ;(def item (first items))
-;(def scrape-and-print (print-items (scraping/scrape-items html scraper)))
+;(print-items (scraping/scrape-item item list-config))
+;(def scrape-and-print (print-items (scraping/scrape-items html config)))

@@ -44,7 +44,8 @@
   (map #(scrape-attribute item %) (:attributes config)))
 
 (defn scrape-items [html config]
-  (map #(scrape-item % config) (html/select html (:item-selector config))))
+  (let [items (html/select html (:item-selector config))]
+    (map #(scrape-item % config) items)))
 
 (defn build-search-url [url-template search-term page-number]
   (let [items-per-page 25 ;; TODO get from config
