@@ -6,20 +6,9 @@
   {:home-url "https://www.page.com"
    :list-page {
      :url-path "/searchresults.html"
-     :item-selector "#search_results .item"
-     :attributes [
-         {:name "name"
-          :selector ".name"
-          :extractor "content"}
-         {:name "url"
-          :selector ".link"
-          :extractor "attr href"}]}
+     :item-selector "#search_results .item"}
    :detail-page {
-     :url-path "${url}"
-     :attributes [
-         {:name "image"
-          :selector "img"
-          :extractor "attr src"}]}})
+     :url-path "${url}"}})
 
 (def parsed-config
   (parse-config config-src))
