@@ -1,32 +1,16 @@
-(ns scraper.template-parsing
-    (:require [net.cgrand.enlive-html :as html])
+(ns scraper.config
+    (:require [hickory-css-selectors :as css])
     (:require [clojure.string :as string]))
 
 (defn- split-by-space [str]
   (string/split str #" "))
 
-(defn- parse-nth-child [str]
-  (let [[matches tag num] (re-find #"^(.*):nth-child\((\d+)\)$" str)]
-    (if matches
-      [(keyword tag) (html/nth-child (Integer/parseInt num))])))
-
-(defn- parse-attr-starts [str]
-  (let [[matches tag attr value] (re-find #"^(\w*)\[(\w+)\^=(.+)\]$" str)]
-    (if matches
-      [(keyword tag) (html/attr-starts (keyword attr) value)])))
-
-(defn parse-selector-word [str] ;; TODO handle tag.class (intersection) and other tag:function
-  (some #(% str) [parse-nth-child parse-attr-starts keyword]))
-
 (defn- parse-extractor [str]
   (apply comp (reverse (map keyword (split-by-space str)))))
 
-(defn- parse-selector [str]
-  (into [] (map parse-selector-word (split-by-space str))))
-
 (defn- parse-attribute [src]
   {:name (:name src)
-   :selector (parse-selector (:selector src))
+   :selector (css/parse-css-selector (:selector src))
    :extractor (parse-extractor (:extractor src))
    :regex (:regex src)})
 
@@ -40,7 +24,7 @@
     {:home-url (:home-url src)
      :list-page {
        :url (get-url list-page)
-       :item-selector (parse-selector (:item-selector list-page))
+       :item-selector (css/parse-css-selector (:item-selector list-page))
        :attributes (parse-attributes list-page)}
      :detail-page {
        :url (get-url detail-page)

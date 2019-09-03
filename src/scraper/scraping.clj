@@ -1,11 +1,12 @@
 (ns scraper.scraping
-    (:require [scraper.template-parsing :as template-parsing])
-    (:require [net.cgrand.enlive-html :as html])
+    (:require [scraper.config :as config])
+    (:require [hickory.core :as h])
+    (:require [hickory.select :as s])
     (:require [clojure.string :as string])
     (:require [clj-http.client :as client]))
 
 (defn parse-scraper [template]
-  (template-parsing/parse-config template))
+  (config/parse-config template))
 
 (defn trim-value [maybe-value]
   (if (some? maybe-value) (string/trim maybe-value) maybe-value))
@@ -31,9 +32,9 @@
       (replace-indexes template groups))
     value))
 
-(defn scrape-attribute [full-html config]
-  (let [item-html (html/select full-html (:selector config))
-        value (-> (map (:extractor config) item-html)
+(defn scrape-attribute [full-item config]
+  (let [elements (s/select full-item (:selector config))
+        value (-> (map (:extractor config) elements)
                   (flatten)
                   (first)
                   (trim-value)
@@ -43,8 +44,8 @@
 (defn scrape-item [item config]
   (map #(scrape-attribute item %) (:attributes config)))
 
-(defn scrape-items [html config]
-  (let [items (html/select html (:item-selector config))]
+(defn scrape-items [full-page config]
+  (let [items (s/select full-page (:item-selector config))]
     (map #(scrape-item % config) items)))
 
 (defn build-search-url [url-template search-term page-number]
@@ -56,18 +57,21 @@
               "PAGE_OFFSET" (str page-offset)}]
     (replace-vars url-template vars)))
 
+(defn parse-html [html-str]
+  (h/as-hickory (h/parse html-str)))
+
 (defn scrape-list [search-term page-number config]
   (let [list-config (:list-page config)
         url-template (:url list-config)
         url (build-search-url url-template search-term page-number)
         response-body (:body (client/get url))
-        parsed-html (html/html-snippet response-body)]
+        parsed-html (parse-html response-body)]
     (scrape-items parsed-html list-config)))
 
-(defn scrape-detail [item config]
+(defn scrape-detail [item-kv config]
   (let [detail-config (:detail-page config)
         url-template (str (:home-url config) (:url-path detail-config))
-        url (replace-vars url-template item)
+        url (replace-vars url-template item-kv)
         response-body (:body (client/get url))
-        parsed-html (html/html-snippet response-body)]
+        parsed-html (parse-html response-body)]
     (scrape-item parsed-html detail-config)))

@@ -1,8 +1,7 @@
 (ns scraper.main
     (:require [scraper.scraping :as scraping])
     (:require [yaml.core :as yaml])
-    (:require [clj-http.client :as client])
-    (:require [net.cgrand.enlive-html :as html]))
+    (:require [clj-http.client :as client]))
 
 (defn print-items [items]
   (doseq [item items]
@@ -27,3 +26,10 @@
 ;(def item (first items))
 ;(print-items (scraping/scrape-item item list-config))
 ;(def scrape-and-print (print-items (scraping/scrape-items html config)))
+
+;(use 'hickory.core)
+;(require '[hickory.select :as s])
+;(require '[clj-http.client :as client])
+;(require '[clojure.string :as string])
+;(def site-htree (-> (client/get "http://formula1.com/default.html") :body parse as-hickory))
+;(-> (s/select (s/child (s/class "blabla")) site-htree) first :content first string/trim)
