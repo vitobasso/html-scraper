@@ -1,6 +1,7 @@
 target/
 .lein-*
 .nrepl-port
+.cpcache
 
 #intellij
 .idea
