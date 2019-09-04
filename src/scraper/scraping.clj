@@ -9,7 +9,7 @@
   (config/parse-config template))
 
 (defn trim-value [maybe-value]
-  (if (some? maybe-value) (string/trim maybe-value) maybe-value))
+  (if (some? maybe-value) (string/trim maybe-value)))
 
 (defn replace-var [str-template [key value]]
   (let [pattern (re-pattern (str "\\$\\{" (name key) "\\}"))]
@@ -33,7 +33,7 @@
     value))
 
 (defn scrape-attribute [full-item config]
-  (let [elements (s/select full-item (:selector config))
+  (let [elements (s/select (:selector config) full-item)
         value (-> (map (:extractor config) elements)
                   (flatten)
                   (first)
@@ -45,16 +45,16 @@
   (map #(scrape-attribute item %) (:attributes config)))
 
 (defn scrape-items [full-page config]
-  (let [items (s/select full-page (:item-selector config))]
+  (let [items (s/select (:item-selector config) full-page)]
     (map #(scrape-item % config) items)))
 
 (defn build-search-url [url-template search-term page-number]
   (let [items-per-page 25 ;; TODO get from config
         page-offset (* (- page-number 1) items-per-page)
-        vars {"SEARCH_TERM" search-term
-              "PAGE_NUMBER" (str page-number)
-              "ITEMS_PER_PAGE" (str items-per-page)
-              "PAGE_OFFSET" (str page-offset)}]
+        vars {:SEARCH_TERM search-term
+              :PAGE_NUMBER (str page-number)
+              :ITEMS_PER_PAGE (str items-per-page)
+              :PAGE_OFFSET (str page-offset)}]
     (replace-vars url-template vars)))
 
 (defn parse-html [html-str]

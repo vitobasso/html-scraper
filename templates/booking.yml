@@ -4,7 +4,7 @@ list-page:
   item-selector: '#search_results_table .sr_item'
   attributes:
     - name: 'name'
-      selector: '.sr-hotel__name'
+      selector: '.sr-hotel__name\n'
       extractor: 'content'
     - name: 'image'
       selector: '.hotel_image'
