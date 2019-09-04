@@ -8,7 +8,7 @@
 (defn- parse-extractor [str]
   (apply comp (reverse (map keyword (split-by-space str)))))
 
-(defn- parse-attribute [src]
+(defn parse-attribute [src]
   {:name (:name src)
    :selector (css/parse-css-selector (:selector src))
    :extractor (parse-extractor (:extractor src))
@@ -17,15 +17,17 @@
 (defn- parse-attributes [src]
   (map parse-attribute (:attributes src)))
 
-(defn parse-config [src] ;; TODO validate paging params
-  (let [list-page (:list-page src)
-        detail-page (:detail-page src)
-        get-url #(str (:home-url src) (:url-path %))]
-    {:home-url (:home-url src)
-     :list-page {
-       :url (get-url list-page)
-       :item-selector (css/parse-css-selector (:item-selector list-page))
-       :attributes (parse-attributes list-page)}
-     :detail-page {
-       :url (get-url detail-page)
-       :attributes (parse-attributes detail-page)}}))
+(defn parse-list-page [src home-url]
+  {:url (str home-url (:url-path src)) ;; TODO validate paging params
+   :item-selector (css/parse-css-selector (:item-selector src))
+   :attributes (parse-attributes src)})
+
+(defn parse-detail-page [src home-url]
+  {:url (str home-url (:url-path src))
+   :attributes (parse-attributes src)})
+
+(defn parse-config [src]
+  (let [home-url (:home-url src)]
+    {:home-url    home-url
+     :list-page   (parse-list-page (:list-page src) home-url)
+     :detail-page (parse-detail-page (:detail-page src) home-url)}))

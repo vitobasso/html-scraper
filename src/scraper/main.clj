@@ -11,7 +11,7 @@
       (println attribute))))
 
 (def config
-  (scraping/parse-scraper (yaml/from-file "templates/amazon-co-uk.yml")))
+  (scraping/parse-config (yaml/from-file "templates/amazon-co-uk.yml")))
 
 (defn page [search-term page-number]
   (print-items (scraping/scrape-list search-term page-number config)))

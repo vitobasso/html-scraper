@@ -5,8 +5,8 @@
     (:require [clojure.string :as string])
     (:require [clj-http.client :as client]))
 
-(defn parse-scraper [template]
-  (config/parse-config template))
+(defn parse-config [src]
+  (config/parse-config src))
 
 (defn trim-value [maybe-value]
   (if (some? maybe-value) (string/trim maybe-value)))
@@ -34,15 +34,19 @@
 
 (defn scrape-attribute [full-item config]
   (let [elements (s/select (:selector config) full-item)
+        key (keyword (:name config))
         value (-> (map (:extractor config) elements)
                   (flatten)
                   (first)
                   (trim-value)
                   (regex-extract (:regex config)))]
-    {(:name config) value}))
+    {key value}))
 
 (defn scrape-item [item config]
-  (map #(scrape-attribute item %) (:attributes config)))
+  (let [attr-config (:attributes config)
+        scrape-one-attr #(scrape-attribute item %)
+        all-attrs (map scrape-one-attr attr-config)]
+    (apply merge all-attrs)))
 
 (defn scrape-items [full-page config]
   (let [items (s/select (:item-selector config) full-page)]

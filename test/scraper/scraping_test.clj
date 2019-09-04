@@ -1,6 +1,7 @@
 (ns scraper.scraping-test
   (:require [clojure.test :refer :all]
-            [scraper.scraping :refer :all]))
+            [scraper.scraping :refer :all]
+            [scraper.config :as config]))
 
 (deftest test-build-search-url
   (testing "page number"
@@ -53,3 +54,36 @@
     (is (= "I love my ${1} and my ${2}"
            (replace-indexes "I love my ${1} and my ${2}" nil))))
   )
+
+(def item-html (parse-html "
+<div id='foo'>
+  <p class='a-name other-class'>the name</p>
+  <img src='image.jpg'/>
+</div>"))
+
+(deftest test-scrape-attribute
+  (testing "class and content"
+    (let [src {:name "name" :selector ".a-name" :extractor "content"}
+          config (config/parse-attribute src)]
+      (is (= {:name "the name"}
+             (scrape-attribute item-html config)))))
+  (testing "id and attribute"
+    (let [src {:name "image" :selector "#foo img" :extractor "attrs src"}
+          config (config/parse-attribute src)]
+      (is (= {:image "image.jpg"}
+             (scrape-attribute item-html config))))))
+
+(def page-html (parse-html "
+<div>
+  <p><span>item 1</span></p>
+  <p><span>item 2</span></p>
+  <p><span>item 3</span></p>
+</div>"))
+
+(deftest test-scrape-items
+  (testing "class and content"
+    (let [src {:item-selector "p"
+               :attributes  [{:name "name" :selector "span" :extractor "content"}]}
+          config (config/parse-list-page src "dummy")]
+      (is (= [{:name "item 1"} {:name "item 2"} {:name "item 3"}]
+             (scrape-items page-html config))))))
