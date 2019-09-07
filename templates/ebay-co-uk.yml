@@ -1,6 +1,6 @@
 home-url: 'https://www.ebay.co.uk'
 list-page:
-  url-path: '/sch/i.html?_nkw=${SEARCH_TERM}&_pgn=${PAGE_NUMBER}'
+  url-path: '/sch/i.html?_nkw=${search-term}&_pgn=${page-number}'
   item-selector: '.sresult'
   attributes:
     - name: 'name'

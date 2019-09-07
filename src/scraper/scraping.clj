@@ -55,10 +55,10 @@
 (defn build-search-url [url-template search-term page-number]
   (let [items-per-page 25 ;; TODO get from config
         page-offset (* (- page-number 1) items-per-page)
-        vars {:SEARCH_TERM search-term
-              :PAGE_NUMBER (str page-number)
-              :ITEMS_PER_PAGE (str items-per-page)
-              :PAGE_OFFSET (str page-offset)}]
+        vars {:search-term search-term
+              :page-number (str page-number)
+              :items-per-page (str items-per-page)
+              :page-offset (str page-offset)}]
     (replace-vars url-template vars)))
 
 (defn parse-html [html-str]
