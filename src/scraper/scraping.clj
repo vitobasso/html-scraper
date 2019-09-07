@@ -35,11 +35,12 @@
 (defn scrape-attribute [full-item config]
   (let [elements (s/select (:selector config) full-item)
         key (keyword (:name config))
-        value (-> (map (:extractor config) elements)
+        value (->> (map (:extractor config) elements)
                   (flatten)
-                  (first)
-                  (trim-value)
-                  (regex-extract (:regex config)))]
+                  (filter string?)
+                  (map trim-value)
+                  (map #(regex-extract % (:regex config)))
+                  (first))]
     {key value}))
 
 (defn scrape-item [item config]
