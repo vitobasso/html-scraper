@@ -39,6 +39,7 @@
                   (flatten)
                   (filter string?)
                   (map trim-value)
+                  (remove empty?)
                   (map #(regex-extract % (:regex config)))
                   (first))]
     {key value}))

@@ -59,6 +59,7 @@
 <div id='foo'>
   <p class='a-name other-class'>the name</p>
   <img src='image.jpg'/>
+  some text
 </div>"))
 
 (deftest test-scrape-attribute
@@ -71,6 +72,11 @@
     (let [src {:name "image" :selector "#foo img" :extractor "attrs src"}
           config (config/parse-attribute src)]
       (is (= {:image "image.jpg"}
+             (scrape-attribute item-html config)))))
+  (testing "text along elements"
+    (let [src {:name "name" :selector "#foo" :extractor "content"}
+          config (config/parse-attribute src)]
+      (is (= {:name "some text"}
              (scrape-attribute item-html config))))))
 
 (def page-html (parse-html "
