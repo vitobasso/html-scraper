@@ -24,6 +24,6 @@ list-page:
     - name: 'size'
       selector: '.num-sqft'
       extractor: 'content'
-    - name: 'num-beds'
+    - name: 'rooms'
       selector: '.num-beds'
       extractor: 'content'

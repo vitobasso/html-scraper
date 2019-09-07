@@ -11,7 +11,7 @@
       (println attribute))))
 
 (def config
-  (scraping/parse-config (yaml/from-file "templates/zoopla.yml")))
+  (scraping/parse-config (yaml/from-file "templates/spareroom.yml")))
 
 (defn page [search-term page-number]
   (print-items (scraping/scrape-list search-term page-number config)))

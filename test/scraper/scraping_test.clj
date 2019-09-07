@@ -73,7 +73,7 @@
           config (config/parse-attribute src)]
       (is (= {:image "image.jpg"}
              (scrape-attribute item-html config)))))
-  (testing "text along elements"
+  (testing "text with element siblings"
     (let [src {:name "name" :selector "#foo" :extractor "content"}
           config (config/parse-attribute src)]
       (is (= {:name "some text"}
