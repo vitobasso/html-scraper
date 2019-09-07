@@ -21,3 +21,15 @@ list-page:
     - name: 'rooms'
       selector: '.shortDescription'
       extractor: 'content'
+detail-page:
+  url-path: '${url}'
+  attributes:
+    - name: 'station-distance'
+      selector: '.key-features__station-distance'
+      extractor: 'content'
+    - name: 'latlng'
+      selector: 'script'
+      extractor: 'content'
+      regex:
+        find: '(?s)lat:\s*''([0-9\.\-]+).*lon:\s*''([0-9\.\-]+)'
+        replace: '${1},${2}'

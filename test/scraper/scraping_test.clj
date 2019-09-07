@@ -58,6 +58,7 @@
 (def item-html (parse-html "
 <div id='foo'>
   <p class='a-name other-class'>the name</p>
+  <p>text in the 2nd p tag</p>
   <img src='image.jpg'/>
   some text
 </div>"))
@@ -77,6 +78,21 @@
     (let [src {:name "name" :selector "#foo" :extractor "content"}
           config (config/parse-attribute src)]
       (is (= {:name "some text"}
+             (scrape-attribute item-html config)))))
+  (testing "matching regex"
+    (let [src {:name "name" :selector "p" :extractor "content" :regex {:find "(.*2nd.*)"}}
+          config (config/parse-attribute src)]
+      (is (= {:name "text in the 2nd p tag"}
+             (scrape-attribute item-html config)))))
+  (testing "matching regex fails"
+    (let [src {:name "name" :selector "p" :extractor "content" :regex {:find "wont match this"}}
+          config (config/parse-attribute src)]
+      (is (= {:name nil}
+             (scrape-attribute item-html config)))))
+  (testing "match and replace regex"
+    (let [src {:name "name" :selector "p" :extractor "content" :regex {:find "text in the (.+)" :replace "${1}"}}
+          config (config/parse-attribute src)]
+      (is (= {:name "2nd p tag"}
              (scrape-attribute item-html config))))))
 
 (def page-html (parse-html "

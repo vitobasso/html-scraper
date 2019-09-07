@@ -27,9 +27,12 @@
 (defn regex-extract [value config]
   (if config
     (let [pattern (re-pattern (:find config))
-          [_ & groups] (re-find pattern value)
+          [match & groups] (re-find pattern value)
           template (:replace config)]
-      (replace-indexes template groups))
+      (if match
+        (if template
+          (replace-indexes template groups)
+          value)))
     value))
 
 (defn scrape-attribute [full-item config]
@@ -41,6 +44,7 @@
                   (map trim-value)
                   (remove empty?)
                   (map #(regex-extract % (:regex config)))
+                  (remove nil?)
                   (first))]
     {key value}))
 
