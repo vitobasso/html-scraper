@@ -11,7 +11,7 @@
       (println attribute))))
 
 (def config
-  (scraping/parse-config (yaml/from-file "templates/booking.yml")))
+  (scraping/parse-config (yaml/from-file "templates/ebay-co-uk.yml")))
 
 (defn page [search-term page-number]
   (print-items (scraping/scrape-list search-term page-number config)))

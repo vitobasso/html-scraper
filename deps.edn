@@ -1,10 +1,9 @@
 {:deps    {org.clojure/clojure {:mvn/version "1.10.1"}
            io.forward/yaml {:mvn/version "1.0.9"}
            clj-http {:mvn/version "3.10.0"}
-           ;hickory {:mvn/version "0.7.1"}
-           hickory {:local/root "/Users/victorbasso/Documents/workspace/hickory/target/hickory-0.7.1.jar"}
-           hickory-css-selector {:git/url "https://github.com/taylorwood/hickory-css-selector"
-                                 :sha "b2ee61373632e40782585543eff7e2f2812f21aa"}}
+           hickory {:local/root "/Users/vba18/vituel/hickory/target/hickory-0.7.1.jar"}
+           hickory-css-selector {:git/url "https://github.com/vitobasso/hickory-css-selector"
+                                 :sha "ad26578a7b57e97be90c44481984d7241da5f909"}}
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps  {lambdaisland/kaocha {:mvn/version "0.0-529"}}
                   :main-opts   ["-m" "kaocha.runner"]}}}

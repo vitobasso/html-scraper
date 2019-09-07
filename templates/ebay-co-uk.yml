@@ -1,0 +1,17 @@
+home-url: 'https://www.ebay.co.uk'
+list-page:
+  url-path: '/sch/i.html?_nkw=${SEARCH_TERM}&_pgn=${PAGE_NUMBER}'
+  item-selector: '.sresult'
+  attributes:
+    - name: 'name'
+      selector: '.lvtitle a'
+      extractor: 'content'
+    - name: 'image'
+      selector: '.lvpic img'
+      extractor: 'attrs imgurl'
+    - name: 'url'
+      selector: 'a'
+      extractor: 'attrs href'
+    - name: 'price'
+      selector: '.lvprice span'
+      extractor: 'content'
