@@ -95,7 +95,7 @@
       (is (= {:name "2nd p tag"}
              (scrape-attribute item-html config))))))
 
-(def page-html (parse-html "
+(def list-html (parse-html "
 <div>
   <p><span>item 1</span></p>
   <p><span>item 2</span></p>
@@ -108,4 +108,4 @@
                :attributes  [{:name "name" :selector "span" :extractor "content"}]}
           config (config/parse-list-page src "dummy")]
       (is (= [{:name "item 1"} {:name "item 2"} {:name "item 3"}]
-             (scrape-items page-html config))))))
+             (scrape-items list-html config))))))

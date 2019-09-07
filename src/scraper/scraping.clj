@@ -80,7 +80,7 @@
 
 (defn scrape-detail [item-kv config]
   (let [detail-config (:detail-page config)
-        url-template (str (:home-url config) (:url-path detail-config))
+        url-template (:url detail-config)
         url (replace-vars url-template item-kv)
         response-body (:body (client/get url))
         parsed-html (parse-html response-body)]
