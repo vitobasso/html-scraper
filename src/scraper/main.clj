@@ -6,9 +6,7 @@
   (:require [hickory.select :as s]))
 
 (defn print-items [items]
-  (doseq [item items]
-    (doseq [attribute item]
-      (println attribute))))
+  (doseq [item items] (println item)))
 
 (def config
   (scraping/parse-config (yaml/from-file "templates/spareroom.yml")))
@@ -17,7 +15,7 @@
   (print-items (scraping/scrape-list search-term page-number config)))
 
 (defn detail [item]
-  (print-items (scraping/scrape-detail item config)))
+  (println (scraping/scrape-detail item config)))
 
 ; uncomment to try manual scraping from repl
 ;(def list-config (:list-page config))

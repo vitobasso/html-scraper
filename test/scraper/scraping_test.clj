@@ -21,10 +21,10 @@
 (deftest test-regex-extract
   (testing "extract one thing"
     (is (= "£10"
-           (regex-extract "it costs 10 pounds" {:find "\\D*(\\d+)\\D*" :replace "£${1}"}))))
+           (regex-extract "it costs 10 pounds" {:find "\\D*(\\d+)\\D*", :replace "£${1}"}))))
   (testing "extract two things"
     (is (= "£10.50"
-           (regex-extract "it costs 10 pounds and 50 pence" {:find "\\D*(\\d+)\\D*(\\d+)\\D*" :replace "£${1}.${2}"}))))
+           (regex-extract "it costs 10 pounds and 50 pence" {:find "\\D*(\\d+)\\D*(\\d+)\\D*", :replace "£${1}.${2}"}))))
   (testing "if no config, bypass"
     (is (= "bla bla"
            (regex-extract "bla bla" nil))))
@@ -36,7 +36,7 @@
 (deftest test-replace-vars
   (testing "replace two vars"
     (is (= "I love my cat too much"
-           (replace-vars "I love my ${pet} ${amount}" {:pet "cat" :amount "too much"}))))
+           (replace-vars "I love my ${pet} ${amount}" {:pet "cat", :amount "too much"}))))
   (testing "if wrong keys, do nothing"
     (is (= "I love my ${pet}"
            (replace-vars "I love my ${pet}" {:human "Abraham Lincoln"}))))
@@ -65,47 +65,48 @@
 
 (deftest test-scrape-attribute
   (testing "class and content"
-    (let [src {:name "name" :selector ".a-name" :extractor "content"}
+    (let [src {:name "name", :selector ".a-name", :extractor "content"}
           config (config/parse-attribute src)]
       (is (= {:name "the name"}
              (scrape-attribute item-html config)))))
   (testing "id and attribute"
-    (let [src {:name "image" :selector "#foo img" :extractor "attrs src"}
+    (let [src {:name "image", :selector "#foo img", :extractor "attrs src"}
           config (config/parse-attribute src)]
       (is (= {:image "image.jpg"}
              (scrape-attribute item-html config)))))
   (testing "text with element siblings"
-    (let [src {:name "name" :selector "#foo" :extractor "content"}
+    (let [src {:name "name", :selector "#foo", :extractor "content"}
           config (config/parse-attribute src)]
       (is (= {:name "some text"}
              (scrape-attribute item-html config)))))
   (testing "matching regex"
-    (let [src {:name "name" :selector "p" :extractor "content" :regex {:find "(.*2nd.*)"}}
+    (let [src {:name "name", :selector "p", :extractor "content", :regex {:find "(.*2nd.*)"}}
           config (config/parse-attribute src)]
       (is (= {:name "text in the 2nd p tag"}
              (scrape-attribute item-html config)))))
   (testing "matching regex fails"
-    (let [src {:name "name" :selector "p" :extractor "content" :regex {:find "wont match this"}}
+    (let [src {:name "name", :selector "p", :extractor "content", :regex {:find "wont match this"}}
           config (config/parse-attribute src)]
       (is (= {:name nil}
              (scrape-attribute item-html config)))))
   (testing "match and replace regex"
-    (let [src {:name "name" :selector "p" :extractor "content" :regex {:find "text in the (.+)" :replace "${1}"}}
+    (let [src {:name "name", :selector "p", :extractor "content", :regex {:find "text in the (.+)", :replace "${1}"}}
           config (config/parse-attribute src)]
       (is (= {:name "2nd p tag"}
              (scrape-attribute item-html config))))))
 
 (def list-html (parse-html "
 <div>
-  <p><span>item 1</span></p>
-  <p><span>item 2</span></p>
-  <p><span>item 3</span></p>
+  <p id='a'><span>item 1</span></p>
+  <p id='b'><span>item 2</span></p>
+  <p id='c'><span>item 3</span></p>
 </div>"))
 
 (deftest test-scrape-items
   (testing "class and content"
     (let [src {:item-selector "p"
-               :attributes  [{:name "name" :selector "span" :extractor "content"}]}
+               :attributes  [{:name "name", :selector "span", :extractor "content"}
+                             {:name "id", :selector "p", :extractor "attrs id"}]}
           config (config/parse-list-page src "dummy")]
-      (is (= [{:name "item 1"} {:name "item 2"} {:name "item 3"}]
+      (is (= [{:name "item 1", :id "a"} {:name "item 2", :id "b"} {:name "item 3", :id "c"}]
              (scrape-items list-html config))))))
