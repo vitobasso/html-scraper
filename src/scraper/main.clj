@@ -1,28 +1,32 @@
 (ns scraper.main
-  (:require [scraper.scraping :as scraping])
-  (:require [yaml.core :as yaml])
-  (:require [clj-http.client :as client])
+  (:require [scraper.scraping :as scr])
+  (:require [scraper.config :as cfg])
+  (:require [clj-http.client :as cli])
   (:require [hickory.core :as h])
   (:require [hickory.select :as s]))
 
 (defn print-items [items]
   (doseq [item items] (println item)))
 
-(def config
-  (scraping/parse-config (yaml/from-file "templates/spareroom.yml")))
+(defn sites []
+  (cfg/list-configs))
 
-(defn page [search-term page-number]
-  (print-items (scraping/scrape-list search-term page-number config)))
+(defn page [site search-term page-number]
+  (let [config (cfg/load-config site)
+        items (scr/scrape-list search-term page-number config)]
+    (print-items items)))
 
-(defn detail [item]
-  (println (scraping/scrape-detail item config)))
+(defn detail [site basic-item]
+  (let [config (cfg/load-config site)
+        detailed-item (scr/scrape-detail basic-item config)]
+    (println detailed-item)))
 
 ; uncomment to try manual scraping from repl
 ;(def list-config (:list-page config))
 ;(def url-template (:url list-config))
-;(def url (scraping/build-search-url url-template "london" 1))
-;(def html (-> url client/get :body h/parse h/as-hickory))
+;(def url (scr/build-search-url url-template "london" 1))
+;(def html (-> url cli/get :body h/parse h/as-hickory))
 ;(def items (s/select (:item-selector list-config) html))
 ;(def item (first items))
-;(print-items (scraping/scrape-item item list-config))
-;(print-items (scraping/scrape-items html config))
+;(print-items (scr/scrape-item item list-config))
+;(print-items (scr/scrape-items html config))

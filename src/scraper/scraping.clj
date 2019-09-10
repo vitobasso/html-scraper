@@ -1,12 +1,8 @@
 (ns scraper.scraping
-    (:require [scraper.config :as config])
     (:require [hickory.core :as h])
     (:require [hickory.select :as s])
     (:require [clojure.string :as string])
     (:require [clj-http.client :as client]))
-
-(defn parse-config [src]
-  (config/parse-config src))
 
 (defn trim-value [maybe-value]
   (if (some? maybe-value) (string/trim maybe-value)))
