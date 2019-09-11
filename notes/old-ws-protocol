@@ -1,0 +1,72 @@
+
+# list sources
+->
+{"subject":"list-sources"}
+<-
+{subject: "list-sources",
+ content: ["ebay", "amazon_de", "marktplaats", "booking"]}
+
+
+
+# change source
+->
+{"subject":"change-source","params":{"name":"ebay"}}
+
+
+
+# items
+->
+{"subject":"items",
+ "params":{
+    "keywords":"android",
+    "filters":[],
+    "itemsPerPage":20,
+    "page":1,
+    "isPending":true}}
+<-
+{subject: "items"
+ params: {
+    keywords: "android",
+    filters: [],
+    itemsPerPage: 20,
+    page: 1,
+    isPending: true}
+ content: [ <item> ]}
+
+<item> {
+    id: "NEW LISTING Samsung Galaxy Note 8 64GB Black (Verizon) (Straight Talk compatible) (Unlocked)"
+    image: "https://i.ebayimg.com/thumbs/images/g/5S0AAOSwdNFdeTQu/s-l225.jpg"
+    link: "https://www.ebay.com/itm/Samsung-Galaxy-Note-8-64GB-Black-Verizon-Straight-Talk-compatible-Unlocked/113884830296?epid=2233460345&hash=item1a84109a58:g:5S0AAOSwdNFdeTQu"
+    price: {currency: "USD", value: 264.98}
+    title: "NEW LISTING Samsung Galaxy Note 8 64GB Black (Verizon) (Straight Talk compatible) (Unlocked)"
+    Country: "Customs services and international tracking provided"
+    Format: "Buy It Now"
+
+    #those were probably added later on client side
+    category: {id: "dummy", name: "dummy", aspects: []}
+    aspects: {
+        Format: {
+            confidence: 0.2727272727272727
+            id: "Buy It Now"
+            name: "Buy It Now"
+        },
+        Country: {
+            confidence: 0.33333333333333337
+            id: "Ukraine"
+            name: "Ukraine"
+        }
+    }
+    point: {x: 698.9154456575261, y: 84.44204148059696, index: 0, weight: 0, px: 698.9247229713478, …}
+    targetPoint: {x: 715.5, y: 93.21829623777477}
+}
+
+
+
+# features
+<-
+{subject: "features", content: [ <feature> ]}
+
+<feature> {
+    key: "Country",
+    values: ["Customs services and international tracking provided", "China", "United Kingdom", "Hong Kong", "Ukraine", "Taiwan"]
+}
