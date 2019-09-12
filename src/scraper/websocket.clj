@@ -17,12 +17,20 @@
     (swap! state assoc :source source))
     nil)
 
+(defn convert-item [item]
+  (-> item
+      (assoc :id (:url item))
+      (clojure.set/rename-keys {:url :link, :name :title})))
+
 (defn items [raw-params]
   (let [params   (map-keys keyword raw-params)
         source   (:source @state)
         keywords (:keywords params)
-        page     (Integer. (:page params))]
-    (s/page source keywords page)))
+        page     (Integer. (:page params))
+        results   (s/page source keywords page)]
+    {:subject "items",
+     :params  raw-params,
+     :content (map convert-item results)}))
 
 (def map-subject
   {:list-sources  list-sources
