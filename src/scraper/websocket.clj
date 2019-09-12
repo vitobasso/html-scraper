@@ -3,29 +3,36 @@
   (:require [clojure.data.json :as json]
             [scraper.endpoints :as s]))
 
-(def map-command
-  {:sites  s/sites
-   :page   s/page
-   :detail s/detail})
+(def map-subject
+  {:list-sources  s/sites
+   :items         s/page
+   :detail        s/detail})
+
+(defn map-keys [f map]
+  (reduce-kv (fn [m k v] (assoc m (f k) v)) {} map))
 
 (defn decode-request [msg]
-  (-> msg
-      json/read-str
-      (update 0 keyword)))
+  (->> msg
+       json/read-str
+       (map-keys keyword)))
 
-(defn handle-command [[cmd & args]]
-  (apply (cmd map-command) args))
+(defn handle-request [request]
+  (println request)
+  (let [subject (keyword (:subject request))
+        args (:content request)
+        handler (subject map-subject)]
+    (apply handler args)))
 
-(defn receive-msg [msg]
+(defn receive-message [msg]
   (-> msg
       decode-request
-      handle-command
+      handle-request
       json/write-str))
 
 (defn handler [request]
   (h/with-channel request channel
                   (h/on-close channel (fn [status] (println "client close it" status)))
-                  (h/on-receive channel (fn [data] (h/send! channel (receive-msg data))))))
+                  (h/on-receive channel (fn [data] (h/send! channel (receive-message data))))))
 
 (h/run-server handler {:port 9090}) ;TODO get port from config
 
