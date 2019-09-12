@@ -3,13 +3,31 @@
   (:require [clojure.data.json :as json]
             [scraper.endpoints :as s]))
 
-(def map-subject
-  {:list-sources  s/sites
-   :items         s/page
-   :detail        s/detail})
+(def state (atom {}))
+
+(defn list-sources [param]
+  (s/sites))
 
 (defn map-keys [f map]
   (reduce-kv (fn [m k v] (assoc m (f k) v)) {} map))
+
+(defn change-source [raw-params]
+  (let [params (map-keys keyword raw-params)
+        source (:name params)]
+    (swap! state assoc :source source)))
+
+(defn items [raw-params]
+  (let [params   (map-keys keyword raw-params)
+        source   (:source @state)
+        keywords (:keywords params)
+        page     (Integer. (:page params))]
+    (s/page source keywords page)))
+
+(def map-subject
+  {:list-sources  list-sources
+   :change-source change-source
+   :items         items
+   :detail        s/detail})
 
 (defn decode-request [msg]
   (->> msg
@@ -17,11 +35,10 @@
        (map-keys keyword)))
 
 (defn handle-request [request]
-  (println request)
   (let [subject (keyword (:subject request))
-        args (:content request)
+        params (:params request)
         handler (subject map-subject)]
-    (apply handler args)))
+    (handler params)))
 
 (defn receive-message [msg]
   (-> msg
