@@ -14,7 +14,8 @@
 (defn change-source [raw-params]
   (let [params (map-keys keyword raw-params)
         source (:name params)]
-    (swap! state assoc :source source)))
+    (swap! state assoc :source source))
+    nil)
 
 (defn items [raw-params]
   (let [params   (map-keys keyword raw-params)
@@ -40,16 +41,22 @@
         handler (subject map-subject)]
     (handler params)))
 
-(defn receive-message [msg]
+(defn maybe-respond [result channel]
+  (if result
+    (->> result
+         json/write-str
+         (h/send! channel))))
+
+(defn receive-message [msg channel]
   (-> msg
       decode-request
       handle-request
-      json/write-str))
+      (maybe-respond channel)))
 
 (defn handler [request]
   (h/with-channel request channel
                   (h/on-close channel (fn [status] (println "client close it" status)))
-                  (h/on-receive channel (fn [data] (h/send! channel (receive-message data))))))
+                  (h/on-receive channel (fn [data] (receive-message data channel)))))
 
 (h/run-server handler {:port 9090}) ;TODO get port from config
 
