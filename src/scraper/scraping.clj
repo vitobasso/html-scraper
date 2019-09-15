@@ -32,24 +32,47 @@
           value)))
     value))
 
-(defn scrape-attribute [full-item config]
-  (let [elements (s/select (:selector config) full-item)
-        key (keyword (:name config))
-        value (->> (map (:extractor config) elements)
-                  (flatten)
-                  (filter string?)
-                  (map trim-value)
-                  (remove empty?)
-                  (map #(regex-extract % (:regex config)))
-                  (remove nil?)
-                  (first))]
-    {key value}))
+(defn extract-value [config html]
+  (->> html
+       (s/select (:selector config))
+       (map (:extractor config))
+       (flatten)
+       (filter string?)
+       (map trim-value)
+       (remove empty?)
+       (map #(regex-extract % (:regex config)))
+       (remove nil?)
+       (first)))
 
-(defn scrape-item [item config]
+(defn scrape-attribute-row [row config]
+  (let [label (extract-value (:label config) row)
+        value (extract-value (:value config) row)]
+    {(keyword label) value}))
+
+(defn scrape-attribute-table [full-item config]
+  (if (nil? config) {}
+    (let [rows (s/select (:selector config) full-item)
+          labels-values (map #(scrape-attribute-row % config) rows)]
+      (into {} labels-values))))
+
+(defn scrape-item-by-table [item config]
+  (scrape-attribute-table item (:attribute-table config)))
+
+(defn scrape-attribute [full-item config]
+  (if (nil? config) {}
+    (let [key (keyword (:name config))
+          value (extract-value config full-item)]
+      {key value})))
+
+(defn scrape-item-by-attrs [item config]
   (let [attr-config (:attributes config)
         scrape-one-attr #(scrape-attribute item %)
         all-attrs (map scrape-one-attr attr-config)]
     (apply merge all-attrs)))
+
+(defn scrape-item [item config]
+  (merge (scrape-item-by-attrs item config)
+         (scrape-item-by-table item config)))
 
 (defn scrape-items [full-page config]
   (let [items (s/select (:item-selector config) full-page)]

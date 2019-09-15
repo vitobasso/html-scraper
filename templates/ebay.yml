@@ -15,3 +15,13 @@ list-page:
     - name: 'price'
       selector: '.lvprice span'
       extractor: 'content'
+detail-page:
+  url-path: '${url}'
+  attribute-table:
+    selector: 'itemAttr table tr'
+    label:
+      selector: 'td.attrLabels'
+      extractor: 'content'
+    value:
+      selector: 'td.attrLabels + td span'
+      extractor: 'content'

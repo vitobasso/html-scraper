@@ -69,34 +69,88 @@
 (deftest test-scrape-attribute
   (testing "class and content"
     (let [src {:name "name", :selector ".a-name", :extractor "content"}
-          config (config/parse-attribute src)]
+          config (config/parse-named-attribute src)]
       (is (= {:name "the name"}
              (scrape-attribute item-html config)))))
   (testing "id and attribute"
     (let [src {:name "image", :selector "#foo img", :extractor "attrs src"}
-          config (config/parse-attribute src)]
+          config (config/parse-named-attribute src)]
       (is (= {:image "image.jpg"}
              (scrape-attribute item-html config)))))
   (testing "text with element siblings"
     (let [src {:name "name", :selector "#foo", :extractor "content"}
-          config (config/parse-attribute src)]
+          config (config/parse-named-attribute src)]
       (is (= {:name "some text"}
              (scrape-attribute item-html config)))))
   (testing "matching regex"
     (let [src {:name "name", :selector "p", :extractor "content", :regex {:find "(.*2nd.*)"}}
-          config (config/parse-attribute src)]
+          config (config/parse-named-attribute src)]
       (is (= {:name "text in the 2nd p tag"}
              (scrape-attribute item-html config)))))
   (testing "matching regex fails"
     (let [src {:name "name", :selector "p", :extractor "content", :regex {:find "wont match this"}}
-          config (config/parse-attribute src)]
+          config (config/parse-named-attribute src)]
       (is (= {:name nil}
              (scrape-attribute item-html config)))))
   (testing "match and replace regex"
     (let [src {:name "name", :selector "p", :extractor "content", :regex {:find "text in the (.+)", :replace "${1}"}}
-          config (config/parse-attribute src)]
+          config (config/parse-named-attribute src)]
       (is (= {:name "2nd p tag"}
+             (scrape-attribute item-html config)))))
+  (testing "empty if nil config"
+    (let [config nil]
+      (is (= {}
              (scrape-attribute item-html config))))))
+
+(def attribute-table-html (parse-html "
+<table id='attributes'>
+  <tr>
+    <td class='label'>Ram</td>
+    <td>16GB</td>
+  </tr>
+  <tr>
+    <td class='label'>Disk</td>
+    <td>1TB</td>
+  </tr>
+</div>"))
+
+(deftest test-scrape-attribute-table
+  (testing "attribute table"
+    (let [src {:selector "#attributes tr",
+               :label {:selector "td.label", :extractor "content"},
+               :value {:selector "td.label + td", :extractor "content"}}
+          config (config/parse-attribute-table src)]
+      (is (= {:Ram "16GB", :Disk "1TB"}
+             (scrape-attribute-table attribute-table-html config)))))
+  (testing "empty if nil config"
+    (let [config nil]
+      (is (= {}
+             (scrape-attribute-table attribute-table-html config))))))
+
+
+(deftest test-scrape-item
+  (testing "config having attributes"
+    (let [src {:attributes  [{:name "label", :selector ".label", :extractor "content"}]}
+          config (config/parse-detail-page src "dummy")]
+      (is (= {:label "Ram"}
+             (scrape-item attribute-table-html config)))))
+  (testing "config having attribute-table"
+      (let [src {:attribute-table
+                   {:selector "#attributes tr",
+                    :label {:selector "td.label", :extractor "content"},
+                    :value {:selector "td.label + td", :extractor "content"}}}
+            config (config/parse-detail-page src "dummy")]
+        (is (= {:Ram "16GB", :Disk "1TB"}
+               (scrape-item attribute-table-html config)))))
+  (testing "config having both attributes and attribute-table"
+      (let [src {:attributes  [{:name "label", :selector ".label", :extractor "content"}]
+                 :attribute-table
+                   {:selector "#attributes tr",
+                    :label {:selector "td.label", :extractor "content"},
+                    :value {:selector "td.label + td", :extractor "content"}}}
+            config (config/parse-detail-page src "dummy")]
+        (is (= {:label "Ram" :Ram "16GB", :Disk "1TB"}
+               (scrape-item attribute-table-html config))))))
 
 (def list-html (parse-html "
 <div>
