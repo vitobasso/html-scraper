@@ -3,6 +3,9 @@ list-page:
   url-path: '/to-rent/property/london/?q=${search-term}&pn=${page-number}'
   item-selector: '.listing-results > li'
   attributes:
+    - name: 'name' #TODO extract from url, make it "id"
+      selector: '.listing-results-price'
+      extractor: 'attrs href'
     - name: 'image'
       selector: '.photo-hover img'
       extractor: 'attrs src'

@@ -9,6 +9,9 @@ list-page:
     - name: 'image'
       selector: 'img'
       extractor: 'attrs data-src'
+      regex:
+        find: '^\/\/(.*)'
+        replace: 'https://${1}'
     - name: 'url'
       selector: 'a'
       extractor: 'attrs href'

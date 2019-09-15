@@ -8,8 +8,9 @@
   (if (some? maybe-value) (string/trim maybe-value)))
 
 (defn replace-var [str-template [key value]]
-  (let [pattern (re-pattern (str "\\$\\{" (name key) "\\}"))]
-    (string/replace str-template pattern value)))
+  (let [pattern (re-pattern (str "\\$\\{" (name key) "\\}"))
+        literal-value (string/re-quote-replacement value)]
+    (string/replace str-template pattern literal-value)))
 
 (defn replace-vars [str-template var-map]
   (reduce replace-var str-template var-map))
@@ -72,6 +73,7 @@
         url (build-search-url url-template search-term page-number)
         response-body (:body (client/get url))
         parsed-html (parse-html response-body)]
+    (prn "scrape-list: " url)
     (scrape-items parsed-html list-config)))
 
 (defn scrape-detail [item-kv config]
@@ -80,4 +82,5 @@
         url (replace-vars url-template item-kv)
         response-body (:body (client/get url))
         parsed-html (parse-html response-body)]
+    (prn "scrape-detail: " url)
     (scrape-item parsed-html detail-config)))

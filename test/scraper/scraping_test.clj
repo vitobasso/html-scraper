@@ -53,6 +53,9 @@
   (testing "if nil values, do nothing"
     (is (= "I love my ${1} and my ${2}"
            (replace-indexes "I love my ${1} and my ${2}" nil))))
+  (testing "value may contain a $"
+    (is (= "oh no, there's a $ in my string"
+           (replace-indexes "${1}" ["oh no, there's a $ in my string"]))))
   )
 
 (def item-html (parse-html "
