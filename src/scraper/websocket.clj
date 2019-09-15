@@ -32,6 +32,10 @@
       (update :price convert-price)
       (clojure.set/rename-keys {:url :link, :name :title})))
 
+(defn try-convert-item [item]
+  (try (convert-item item)
+       (catch Exception e (prn (str "Failed: " item)))))
+
 (defn items [raw-params]
   (let [params   (map-keys keyword raw-params)
         source   (:source @state)
@@ -40,7 +44,7 @@
         results   (s/page source keywords page)]
     {:subject "items",
      :params  raw-params,
-     :content (map convert-item results)}))
+     :content (remove nil? (map try-convert-item results))}))
 
 (def map-subject
   {:list-sources  list-sources
