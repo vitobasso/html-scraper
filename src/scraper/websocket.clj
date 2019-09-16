@@ -34,7 +34,7 @@
 
 (defn try-convert-item [item]
   (try (convert-item item)
-       (catch Exception e (prn (str "Failed: " item)))))
+       (catch Exception _ (prn (str "Failed: " item)))))
 
 (defn items [raw-params]
   (let [params   (map-keys keyword raw-params)
@@ -46,11 +46,20 @@
      :params  raw-params,
      :content (remove nil? (map try-convert-item results))}))
 
+(defn detail [raw-params]
+  (let [params   (map-keys keyword raw-params)
+        source   (:source @state)
+        item     (:item params)
+        result   (s/detail source item)]
+    {:subject "items",
+     :params  raw-params,
+     :content result}))
+
 (def map-subject
   {:list-sources  list-sources
    :change-source change-source
    :items         items
-   :detail        s/detail})
+   :detail        detail})
 
 (defn decode-request [msg]
   (->> msg

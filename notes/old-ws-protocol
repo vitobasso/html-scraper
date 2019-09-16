@@ -1,4 +1,11 @@
 
+{"subject":"change-source","params":{"name":"spareroom"}}
+{"subject":"items", "params":{"keywords":"london","page":1}}
+{"subject":"detail", "params":{"item": {"url": "/flatshare/london/stoke_newington/9038779"}}}
+
+---
+
+
 # list sources
 ->
 {"subject":"list-sources"}
@@ -70,3 +77,15 @@
     key: "Country",
     values: ["Customs services and international tracking provided", "China", "United Kingdom", "Hong Kong", "Ukraine", "Taiwan"]
 }
+
+
+# detail
+->
+{"subject":"detail",
+ "params":{
+    "item": {"url": "/blabla/123"}}}
+<-
+{subject: "items"
+ params: {
+    item: {"url": "/blabla/123"}}
+ content: [ <item> ]}
