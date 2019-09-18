@@ -1,7 +1,7 @@
 {:deps    {org.clojure/clojure {:mvn/version "1.10.1"}
            io.forward/yaml {:mvn/version "1.0.9"}
            clj-http {:mvn/version "3.10.0"}
-           hickory {:local/root "/Users/vba18/vituel/hickory/target/hickory-0.7.1.jar"}
+           hickory {:local/root "/Users/victorbasso/Documents/workspace/hickory/target/hickory-0.7.1.jar"}
            hickory-css-selector {:git/url "https://github.com/vitobasso/hickory-css-selector"
                                  :sha "fe88ba16900afd55a728ecabf592c0ae28484dcb"}}
  :aliases {:test {:extra-paths ["test"]
