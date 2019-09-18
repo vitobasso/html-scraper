@@ -9,10 +9,15 @@
 (defn- parse-extractor [str]
   (apply comp (reverse (map keyword (split-by-space str)))))
 
+(defn parse-regex [src]
+  (if src
+    {:find (-> src :find re-pattern)
+     :replace (-> src :replace)}))
+
 (defn parse-attribute [src]
   {:selector (css/parse-css-selector (:selector src))
    :extractor (parse-extractor (:extractor src))
-   :regex (:regex src)})
+   :regex (parse-regex (:regex src))})
 
 (defn parse-named-attribute [src]
   (merge {:name (:name src)}

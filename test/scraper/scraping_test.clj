@@ -21,10 +21,10 @@
 (deftest test-regex-extract
   (testing "extract one thing"
     (is (= "£10"
-           (regex-extract "it costs 10 pounds" {:find "\\D*(\\d+)\\D*", :replace "£${1}"}))))
+           (regex-extract "it costs 10 pounds" {:find #"\D*(\d+)\D*", :replace "£${1}"}))))
   (testing "extract two things"
     (is (= "£10.50"
-           (regex-extract "it costs 10 pounds and 50 pence" {:find "\\D*(\\d+)\\D*(\\d+)\\D*", :replace "£${1}.${2}"}))))
+           (regex-extract "it costs 10 pounds and 50 pence" {:find #"\D*(\d+)\D*(\d+)\D*", :replace "£${1}.${2}"}))))
   (testing "if no config, bypass"
     (is (= "bla bla"
            (regex-extract "bla bla" nil))))

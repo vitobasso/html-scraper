@@ -23,8 +23,7 @@
 
 (defn regex-extract [value config]
   (if config
-    (let [pattern (re-pattern (:find config))
-          [match & groups] (re-find pattern value)
+    (let [[match & groups] (re-find (:find config) value)
           template (:replace config)]
       (if match
         (if template
