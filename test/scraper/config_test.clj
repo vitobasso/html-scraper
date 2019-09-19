@@ -24,3 +24,37 @@
     (is (= "https://www.page.com${url}"
            (:url (:detail-page parsed-config)))))
   )
+
+(deftest test-item-selection
+  (testing "item-selector happy case"
+    (is (some? (parse-config {:home-url "https://www.page.com"
+                              :list-page {:url-path "/searchresults.html"
+                                          :item-selector "#search_results .item"}}))))
+  (testing "item-separator happy case"
+    (is (some? (parse-config {:home-url "https://www.page.com"
+                              :list-page {:url-path "/searchresults.html"
+                                          :container-selector "#search_results .item"
+                                          :item-separator "regex"}}))))
+  (testing "fails when missing item-separator"
+    (is (thrown? Exception
+                 (parse-config {:home-url "https://www.page.com"
+                                :list-page {:url-path "/searchresults.html"
+                                            :container-selector "#search_results .item"}}))))
+  (testing "fails when missing container-selector"
+    (is (thrown? Exception
+                 (parse-config {:home-url "https://www.page.com"
+                                :list-page {:url-path "/searchresults.html"
+                                            :item-separator "regex"}}))))
+  (testing "fails when missing all item selector params"
+    (is (thrown? Exception
+                 (parse-config {:home-url "https://www.page.com"
+                                :list-page {:url-path "/searchresults.html"}}))))
+  (testing "fails when has item-selector and container-selector at the same time"
+    (is (thrown? Exception
+                 (parse-config {:home-url "https://www.page.com"
+                                :list-page {:url-path "/searchresults.html"
+                                            :container-selector "#search_results .item"
+                                            :item-selector "#search_results .item"}}))))
+  )
+
+;TODO fail: invalid attribute/regex/find

@@ -1,6 +1,7 @@
 (ns scraper.scraping
     (:require [hickory.core :as h])
     (:require [hickory.select :as s])
+    (:require [hickory.render :as r])
     (:require [clojure.string :as string])
     (:require [clj-http.client :as client]))
 
@@ -73,8 +74,32 @@
   (merge (scrape-item-by-attrs item config)
          (scrape-item-by-table item config)))
 
+(defn parse-html [html-str]
+  (h/as-hickory (h/parse html-str)))
+
+(defn split-items [container config]
+  (let [container-html (r/hickory-to-html container)
+        separator (re-pattern (:item-separator config))
+        item-htmls (string/split container-html separator)]
+    (map parse-html item-htmls)))
+
+(defn select-items-by-separator [full-page config]
+  (->> full-page
+       (s/select (:container-selector config))
+       (filter map?)
+       (map #(:content %))
+       (flatten)
+       (filter map?)
+       (map #(split-items % config))
+       (flatten)))
+
+(defn select-items [full-page config]
+  (if (:item-selector config)
+    (s/select (:item-selector config) full-page)
+    (select-items-by-separator full-page config)))
+
 (defn scrape-items [full-page config]
-  (let [items (s/select (:item-selector config) full-page)]
+  (let [items (select-items full-page config)]
     (map #(scrape-item % config) items)))
 
 (defn build-search-url [url-template search-term page-number]
@@ -85,9 +110,6 @@
               :items-per-page (str items-per-page)
               :page-offset (str page-offset)}]
     (replace-vars url-template vars)))
-
-(defn parse-html [html-str]
-  (h/as-hickory (h/parse html-str)))
 
 (defn scrape-list [search-term page-number config]
   (let [list-config (:list-page config)

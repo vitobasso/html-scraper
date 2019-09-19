@@ -36,9 +36,31 @@
    :attributes (map parse-named-attribute (:attributes src))
    :attribute-table (parse-attribute-table (:attribute-table src))})
 
+(defn parse-item-selector [src]
+  (let [selector (:item-selector src)]
+    (if (some? selector)
+      {:item-selector (css/parse-css-selector selector)})))
+
+(defn parse-item-separator [src]
+  (let [container (:container-selector src)
+        separator (:item-separator src)]
+    (cond (and container separator)
+            {:container-selector (css/parse-css-selector container)
+             :item-separator (re-pattern separator)}
+          container (throw (Exception. "container-selector is defined but item-separator is missing."))
+          separator (throw (Exception. "item-separator was defined defined but container-selector is missing.")))))
+
+(defn parse-item-selection [src]
+  (let [selector (parse-item-selector src)
+        separator (parse-item-separator src)]
+    (cond
+      (and selector separator) (throw (Exception. "Can't have both item-selector and item-separator defined."))
+      (not (or selector separator)) (throw (Exception. "Either item-selector or item-separator must be defined."))
+      :else (or selector separator))))
+
 (defn parse-list-page [src home-url]
   (merge (parse-detail-page src home-url)
-          {:item-selector (css/parse-css-selector (:item-selector src))}))
+         (parse-item-selection src)))
 
 (defn parse-config [src]
   (let [home-url (:home-url src)]

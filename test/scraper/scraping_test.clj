@@ -159,11 +159,37 @@
   <p id='c'><span>item 3</span></p>
 </div>"))
 
+(def two-column-html (parse-html "
+<div>
+  <p id='a'><span>item 1</span></p>
+  <p id='b'><span>item 2</span></p>
+</div>
+<div>
+  <p id='c'><span>item 3</span></p>
+  <p id='d'><span>item 4</span></p>
+</div>"))
+
 (deftest test-scrape-items
-  (testing "class and content"
+  (testing "item selector"
     (let [src {:item-selector "p"
+               :attributes  [{:name "name", :selector "span", :extractor "content"} ;TODO rm span, use root selector?
+                             {:name "id", :selector "p", :extractor "attrs id"}]}
+          config (config/parse-list-page src "dummy")]
+      (is (= [{:name "item 1", :id "a"} {:name "item 2", :id "b"} {:name "item 3", :id "c"}]
+             (scrape-items list-html config)))))
+  (testing "item separator"
+    (let [src {:container-selector "div" :item-separator "(?=<p)"
                :attributes  [{:name "name", :selector "span", :extractor "content"}
                              {:name "id", :selector "p", :extractor "attrs id"}]}
           config (config/parse-list-page src "dummy")]
       (is (= [{:name "item 1", :id "a"} {:name "item 2", :id "b"} {:name "item 3", :id "c"}]
-             (scrape-items list-html config))))))
+             (scrape-items list-html config)))))
+  (testing "item separator with two containers"
+    (let [src {:container-selector "div" :item-separator "(?=<p)"
+               :attributes  [{:name "name", :selector "span", :extractor "content"}
+                             {:name "id", :selector "p", :extractor "attrs id"}]}
+          config (config/parse-list-page src "dummy")]
+      (is (= [{:name "item 1", :id "a"} {:name "item 2", :id "b"} {:name "item 3", :id "c"} {:name "item 4", :id "d"}]
+             (scrape-items two-column-html config))))))
+
+;TODO move non websocket commits to master
