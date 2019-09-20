@@ -20,9 +20,9 @@
 
 (defn convert-price [price]
   (let [value (->> price
-                 (re-find #"\d+(\.\d+)?")
-                 first
-                 Double.)]
+                   (re-find #"\d+([\.,]\d+)?")
+                   first
+                   Double.)]
     {:currency "$",
      :value    value}))
 
