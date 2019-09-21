@@ -58,6 +58,19 @@
            (replace-indexes "${1}" ["oh no, there's a $ in my string"]))))
   )
 
+(deftest test-extract-value
+  (testing "handles nil"
+    (is (nil? (extract-value (config/parse-attribute {:selector "div" :extractor "content"}) nil))))
+  (testing "handles string"
+    (is (nil? (extract-value (config/parse-attribute {:selector "div" :extractor "content"}) ""))))
+  (testing "handles has-child on nil"
+    (is (nil? (extract-value (config/parse-attribute {:selector ":has-child(div)" :extractor "content"}) nil ))))
+  (testing "handles has-child on string"
+    (is (nil? (extract-value (config/parse-attribute {:selector ":has-child(div)" :extractor "content"}) ""))))
+  (testing "handles has-child on nil content"
+    (is (nil? (extract-value (config/parse-attribute {:selector ":has-child(div)" :extractor "content"})
+                             {:type :element, :attrs nil, :tag :div, :content nil} )))))
+
 (def item-html (parse-html "
 <div id='foo'>
   <p class='a-name other-class'>the name</p>

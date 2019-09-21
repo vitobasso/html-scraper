@@ -32,9 +32,13 @@
           value)))
     value))
 
+(defn select [selector html]
+  (try (s/select selector html)
+       (catch Exception _ nil)))
+
 (defn extract-value [config html]
   (->> html
-       (s/select (:selector config))
+       (select (:selector config))
        (map (:extractor config))
        (flatten)
        (filter string?)
@@ -51,7 +55,7 @@
 
 (defn scrape-attribute-table [full-item config]
   (if (nil? config) {}
-    (let [rows (s/select (:selector config) full-item)
+    (let [rows (select (:selector config) full-item)
           labels-values (map #(scrape-attribute-row % config) rows)]
       (into {} labels-values))))
 
@@ -85,7 +89,7 @@
 
 (defn select-items-by-separator [full-page config]
   (->> full-page
-       (s/select (:container-selector config))
+       (select (:container-selector config))
        (filter map?)
        (map #(:content %))
        (flatten)
@@ -95,7 +99,7 @@
 
 (defn select-items [full-page config]
   (if (:item-selector config)
-    (s/select (:item-selector config) full-page)
+    (select (:item-selector config) full-page)
     (select-items-by-separator full-page config)))
 
 (defn scrape-items [full-page config]
