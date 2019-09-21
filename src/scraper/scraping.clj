@@ -9,9 +9,10 @@
   (if (some? maybe-value) (string/trim maybe-value)))
 
 (defn replace-var [str-template [key value]]
-  (let [pattern (re-pattern (str "\\$\\{" (name key) "\\}"))
-        literal-value (string/re-quote-replacement value)]
-    (string/replace str-template pattern literal-value)))
+  (if (nil? value) str-template
+    (let [pattern (re-pattern (str "\\$\\{" (name key) "\\}"))
+          literal-value (string/re-quote-replacement value)]
+      (string/replace str-template pattern literal-value))))
 
 (defn replace-vars [str-template var-map]
   (reduce replace-var str-template var-map))

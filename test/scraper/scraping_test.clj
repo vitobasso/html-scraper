@@ -28,7 +28,12 @@
   (testing "if no config, bypass"
     (is (= "bla bla"
            (regex-extract "bla bla" nil))))
-  ;;TODO mismatch
+  (testing "nil on mismatch"
+    (is (= nil
+           (regex-extract "no numbers" {:find #"(\d+)" :replace "${1}"}))))
+  (testing "if more regex groups than replace vars, ignore the extra groups"
+    (is (= "750"
+           (regex-extract "£750 pcm" {:find #"(\d+([\.,]\d+)?)" :replace "${1}"}))))
   ;;TODO escaped $
   ;;TODO config missing :find or :replace
   )
@@ -40,6 +45,15 @@
   (testing "if wrong keys, do nothing"
     (is (= "I love my ${pet}"
            (replace-vars "I love my ${pet}" {:human "Abraham Lincoln"}))))
+  (testing "if key with nil value, do nothing"
+    (is (= "I love my ${pet}"
+           (replace-vars "I love my ${pet}" {:human nil}))))
+  (testing "if no vars, ignore the keys"
+    (is (= "Nobody ain't got time for replacements"
+           (replace-vars "Nobody ain't got time for replacements" {:key "put this please"}))))
+  (testing "if more keys than vars, ignore the extra keys"
+    (is (= "just one key that's fantastic please"
+           (replace-vars "just one key ${here} please" {:here "that's fantastic" :there "put this too"}))))
   ;;TODO nil config
   )
 

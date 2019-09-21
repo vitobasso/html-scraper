@@ -15,6 +15,9 @@ list-page:
     - name: 'price'
       selector: '.listing-results-price'
       extractor: 'content'
+      regex:
+        find: '(\d+([\.,]\d+)?)'
+        replace: '${1}'
     - name: 'address'
       selector: '.listing-results-address'
       extractor: 'content'
