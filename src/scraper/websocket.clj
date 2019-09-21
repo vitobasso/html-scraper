@@ -1,6 +1,7 @@
 (ns scraper.websocket
-  (:require [org.httpkit.server :as h])
-  (:require [clojure.data.json :as json]
+  (:require [clojure.string :as string]
+            [clojure.data.json :as json]
+            [org.httpkit.server :as h]
             [scraper.endpoints :as s]))
 
 (def state (atom {}))
@@ -18,10 +19,14 @@
     (swap! state assoc :source source))
     nil)
 
+(defn replace-comma [value]
+  (string/replace value #"," "."))
+
 (defn convert-price [price]
   (let [value (->> price
                    (re-find #"\d+([\.,]\d+)?")
                    first
+                   replace-comma
                    Double.)]
     {:currency "$",
      :value    value}))
