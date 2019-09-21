@@ -34,7 +34,7 @@
 
 (defn try-convert-item [item]
   (try (convert-item item)
-       (catch Exception _ (prn (str "Failed: " item)))))
+       (catch Exception _ (prn "Failed: " item))))
 
 (defn items [raw-params]
   (let [params   (map-keys keyword raw-params)
