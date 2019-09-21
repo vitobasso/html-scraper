@@ -42,20 +42,21 @@
   (testing "replace two vars"
     (is (= "I love my cat too much"
            (replace-vars "I love my ${pet} ${amount}" {:pet "cat", :amount "too much"}))))
-  (testing "if wrong keys, do nothing"
+  (testing "wrong keys"
     (is (= "I love my ${pet}"
            (replace-vars "I love my ${pet}" {:human "Abraham Lincoln"}))))
-  (testing "if key with nil value, do nothing"
+  (testing "key with nil value"
     (is (= "I love my ${pet}"
            (replace-vars "I love my ${pet}" {:human nil}))))
+  (testing "nil map"
+    (is (= "I love my ${pet}"
+           (replace-vars "I love my ${pet}" nil))))
   (testing "if no vars, ignore the keys"
     (is (= "Nobody ain't got time for replacements"
            (replace-vars "Nobody ain't got time for replacements" {:key "put this please"}))))
-  (testing "if more keys than vars, ignore the extra keys"
-    (is (= "just one key that's fantastic please"
-           (replace-vars "just one key ${here} please" {:here "that's fantastic" :there "put this too"}))))
-  ;;TODO nil config
-  )
+  (testing "ignore extra keys"
+    (is (= "just one key so be it please"
+           (replace-vars "just one key ${here} please" {:here "so be it" :there "put this too"})))))
 
 (deftest test-replace-indexes
   (testing "replace two place holders"
@@ -69,8 +70,7 @@
            (replace-indexes "I love my ${1} and my ${2}" nil))))
   (testing "value may contain a $"
     (is (= "oh no, there's a $ in my string"
-           (replace-indexes "${1}" ["oh no, there's a $ in my string"]))))
-  )
+           (replace-indexes "${1}" ["oh no, there's a $ in my string"])))))
 
 (deftest test-extract-value
   (testing "handles nil"
@@ -218,5 +218,3 @@
           config (config/parse-list-page src "dummy")]
       (is (= [{:name "item 1", :id "a"} {:name "item 2", :id "b"} {:name "item 3", :id "c"} {:name "item 4", :id "d"}]
              (scrape-items two-column-html config))))))
-
-;TODO move non websocket commits to master
