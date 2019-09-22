@@ -77,12 +77,12 @@
     (is (nil? (extract-value (config/parse-attribute {:selector "div" :extractor "content"}) nil))))
   (testing "handles string"
     (is (nil? (extract-value (config/parse-attribute {:selector "div" :extractor "content"}) ""))))
-  (testing "handles has-child on nil"
-    (is (nil? (extract-value (config/parse-attribute {:selector ":has-child(div)" :extractor "content"}) nil ))))
-  (testing "handles has-child on string"
-    (is (nil? (extract-value (config/parse-attribute {:selector ":has-child(div)" :extractor "content"}) ""))))
-  (testing "handles has-child on nil content"
-    (is (nil? (extract-value (config/parse-attribute {:selector ":has-child(div)" :extractor "content"})
+  (testing "handles has on nil"
+    (is (nil? (extract-value (config/parse-attribute {:selector ":has(div)" :extractor "content"}) nil ))))
+  (testing "handles has on string"
+    (is (nil? (extract-value (config/parse-attribute {:selector ":has(div)" :extractor "content"}) ""))))
+  (testing "handles has on nil content"
+    (is (nil? (extract-value (config/parse-attribute {:selector ":has(div)" :extractor "content"})
                              {:type :element, :attrs nil, :tag :div, :content nil} )))))
 
 (def item-html (parse-html "
