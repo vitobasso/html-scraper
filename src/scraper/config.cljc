@@ -1,6 +1,6 @@
 (ns scraper.config
-  (:require [hickory.css-selectors :as css])
-  (:require [clojure.string :as string]))
+  (:require [hickory.css-selectors :as css]
+            [clojure.string :as string]))
 
 (defn- split-by-space [str]
   (string/split str #" "))
@@ -41,21 +41,24 @@
     (if (some? selector)
       {:item-select (css/parse-css-selector selector)})))
 
+(def new-error #?(:clj (fn [^String msg] (Exception. msg))
+                  :cljs js/Error.))
+
 (defn parse-item-split [src]
   (let [container (:container-select src)
         split-pattern (:item-split src)]
     (cond (and container split-pattern)
-            {:container-select (css/parse-css-selector container)
+          {:container-select (css/parse-css-selector container)
              :item-split (re-pattern split-pattern)}
-          container (throw (Exception. "container-select is defined but item-split is missing."))
-          split-pattern (throw (Exception. "item-split was defined defined but container-select is missing.")))))
+          container (throw (new-error "container-select is defined but item-split is missing."))
+          split-pattern (throw (new-error "item-split was defined defined but container-select is missing.")))))
 
 (defn parse-item-selection [src]
   (let [selector (parse-item-select src)
         split-pattern (parse-item-split src)]
     (cond
-      (and selector split-pattern) (throw (Exception. "Can't have both item-select and item-split defined."))
-      (not (or selector split-pattern)) (throw (Exception. "Either item-select or item-split must be defined."))
+      (and selector split-pattern) (throw (new-error "Can't have both item-select and item-split defined."))
+      (not (or selector split-pattern)) (throw (new-error "Either item-select or item-split must be defined."))
       :else (or selector split-pattern))))
 
 (defn parse-list-page [src]

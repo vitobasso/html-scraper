@@ -1,6 +1,6 @@
 (ns unit.helper-test
   (:require [clojure.test :refer :all]
-            [scraper.helper :refer :all]))
+            [scraper.helper.common :refer :all]))
 
 (deftest test-derive-paging-params
   (testing "items-per-page and offset can be derived"

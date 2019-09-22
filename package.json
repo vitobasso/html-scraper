@@ -1,0 +1,22 @@
+{
+  "name": "html-scraper",
+  "version": "0.0.1",
+  "description": "Scrapes html using css selectors and regex",
+  "author": "Victor Basso",
+  "homepage": "https://github.com/vitobasso/html-scraper",
+  "license": "MIT",
+  "devDependencies": {
+    "shadow-cljs": "^2.8.52",
+    "source-map-support": "^0.5.13"
+  },
+  "dependencies": {
+    "js-yaml": "3.13.1"
+  },
+  "directories": {
+    "lib": "out"
+  },
+  "files": [
+    "out/**/*.js"
+  ],
+  "main": "dist/index.js"
+}

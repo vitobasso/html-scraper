@@ -1,16 +1,21 @@
 (ns scraper.core
-    (:require [hickory.core :as h])
-    (:require [hickory.select :as s])
-    (:require [hickory.render :as r])
-    (:require [clojure.string :as string]))
+  (:require [hickory.core :as h]
+            [hickory.select :as s]
+            [hickory.render :as r]
+            [clojure.string :as string]
+            #?(:cljs [goog.string :as gstring])))
 
 (defn trim-value [maybe-value]
   (if (some? maybe-value) (string/trim maybe-value)))
 
+(defn re-quote-replacement [s]
+  #?(:clj (string/re-quote-replacement s)
+     :cljs (gstring/regExpEscape s)))
+
 (defn replace-var [str-template [key value]]
   (if (nil? value) str-template
     (let [pattern (re-pattern (str "\\$\\{" (name key) "\\}"))
-          literal-value (string/re-quote-replacement value)]
+          literal-value (re-quote-replacement value)]
       (string/replace str-template pattern literal-value))))
 
 (defn replace-vars [str-template var-map]
@@ -34,7 +39,7 @@
 
 (defn select [selector html]
   (try (s/select selector html)
-       (catch Exception _ nil)))
+       (catch #?(:clj Exception :cljs :default) _ nil)))
 
 (defn extract-value [config html]
   (->> html

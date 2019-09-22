@@ -1,5 +1,5 @@
 (ns integration.integration-test
-  (:require [scraper.helper :as s])
+  (:require [scraper.helper.helper :as s])
   (:require [clojure.test :refer :all]))
 
 (deftest ^:remote preconditions
