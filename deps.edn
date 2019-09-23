@@ -3,7 +3,7 @@
            clj-http {:mvn/version "3.10.0"}
            hickory {:local/root "/Users/victorbasso/Documents/workspace/hickory/target/hickory-0.7.1.jar"}
            hickory-css-selector {:git/url "https://github.com/vitobasso/hickory-css-selector"
-                                 :sha "e96496741c16de4133b7007a5de04fc43dd67a0e"}}
+                                 :sha "ccbcfa6731d3cce87f96886afb5e762828931ee2"}}
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps  {lambdaisland/kaocha {:mvn/version "0.0-529"}}
                   :main-opts   ["-m" "kaocha.runner"]}}}
