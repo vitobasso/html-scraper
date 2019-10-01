@@ -56,7 +56,7 @@
         source   (:source @state)
         item     (:item params)
         result   (s/detail source item)]
-    {:subject "items",
+    {:subject "detail",
      :params  raw-params,
      :content result}))
 
