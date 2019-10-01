@@ -142,12 +142,26 @@
 </div>"))
 
 (deftest test-scrape-attribute-table
-  (testing "attribute table"
+  (testing "happy case"
     (let [src {:selector "#attributes tr",
                :label {:selector "td.label", :extractor "content"},
                :value {:selector "td.label + td", :extractor "content"}}
           config (config/parse-attribute-table src)]
       (is (= {:Ram "16GB", :Disk "1TB"}
+             (scrape-attribute-table attribute-table-html config)))))
+  (testing "nil values"
+    (let [src {:selector "#attributes tr",
+               :label {:selector "td.label", :extractor "content"},
+               :value {:selector "td.absentclass", :extractor "content"}}
+          config (config/parse-attribute-table src)]
+      (is (= {:Ram nil, :Disk nil}
+             (scrape-attribute-table attribute-table-html config)))))
+  (testing "skip empty labels"
+    (let [src {:selector "#attributes tr",
+               :label {:selector "td.absentclass", :extractor "content"},
+               :value {:selector "td.label + td", :extractor "content"}}
+          config (config/parse-attribute-table src)]
+      (is (= {}
              (scrape-attribute-table attribute-table-html config)))))
   (testing "empty if nil config"
     (let [config nil]

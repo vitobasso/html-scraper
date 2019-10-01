@@ -52,7 +52,8 @@
 (defn scrape-attribute-row [row config]
   (let [label (extract-value (:label config) row)
         value (extract-value (:value config) row)]
-    {(keyword label) value}))
+    (if (nil? label) {}
+      {(keyword label) value})))
 
 (defn scrape-attribute-table [full-item config]
   (if (nil? config) {}
