@@ -74,15 +74,15 @@
 
 (deftest test-extract-value
   (testing "handles nil"
-    (is (nil? (extract-value (config/parse-attribute {:selector "div" :extractor "content"}) nil))))
+    (is (nil? (extract-value (config/parse-attribute {:selector "div"}) nil))))
   (testing "handles string"
-    (is (nil? (extract-value (config/parse-attribute {:selector "div" :extractor "content"}) ""))))
+    (is (nil? (extract-value (config/parse-attribute {:selector "div"}) ""))))
   (testing "handles has on nil"
-    (is (nil? (extract-value (config/parse-attribute {:selector ":has(div)" :extractor "content"}) nil ))))
+    (is (nil? (extract-value (config/parse-attribute {:selector ":has(div)"}) nil ))))
   (testing "handles has on string"
-    (is (nil? (extract-value (config/parse-attribute {:selector ":has(div)" :extractor "content"}) ""))))
+    (is (nil? (extract-value (config/parse-attribute {:selector ":has(div)"}) ""))))
   (testing "handles has on nil content"
-    (is (nil? (extract-value (config/parse-attribute {:selector ":has(div)" :extractor "content"})
+    (is (nil? (extract-value (config/parse-attribute {:selector ":has(div)"})
                              {:type :element, :attrs nil, :tag :div, :content nil} )))))
 
 (def item-html (parse-html "
@@ -95,7 +95,7 @@
 
 (deftest test-scrape-attribute
   (testing "class and content"
-    (let [src {:name "name", :selector ".a-name", :extractor "content"}
+    (let [src {:name "name", :selector ".a-name"}
           config (config/parse-named-attribute src)]
       (is (= {:name "the name"}
              (scrape-attribute item-html config)))))
@@ -105,22 +105,22 @@
       (is (= {:image "image.jpg"}
              (scrape-attribute item-html config)))))
   (testing "text with element siblings"
-    (let [src {:name "name", :selector "#foo", :extractor "content"}
+    (let [src {:name "name", :selector "#foo"}
           config (config/parse-named-attribute src)]
       (is (= {:name "some text"}
              (scrape-attribute item-html config)))))
   (testing "matching regex"
-    (let [src {:name "name", :selector "p", :extractor "content", :regex {:find "(.*2nd.*)"}}
+    (let [src {:name "name", :selector "p", :regex {:find "(.*2nd.*)"}}
           config (config/parse-named-attribute src)]
       (is (= {:name "text in the 2nd p tag"}
              (scrape-attribute item-html config)))))
   (testing "matching regex fails"
-    (let [src {:name "name", :selector "p", :extractor "content", :regex {:find "wont match this"}}
+    (let [src {:name "name", :selector "p", :regex {:find "wont match this"}}
           config (config/parse-named-attribute src)]
       (is (= {:name nil}
              (scrape-attribute item-html config)))))
   (testing "match and replace regex"
-    (let [src {:name "name", :selector "p", :extractor "content", :regex {:find "text in the (.+)", :replace "${1}"}}
+    (let [src {:name "name", :selector "p", :regex {:find "text in the (.+)", :replace "${1}"}}
           config (config/parse-named-attribute src)]
       (is (= {:name "2nd p tag"}
              (scrape-attribute item-html config)))))
@@ -144,22 +144,22 @@
 (deftest test-scrape-attribute-table
   (testing "happy case"
     (let [src {:selector "#attributes tr",
-               :label {:selector "td.label", :extractor "content"},
-               :value {:selector "td.label + td", :extractor "content"}}
+               :label {:selector "td.label"},
+               :value {:selector "td.label + td"}}
           config (config/parse-attribute-table src)]
       (is (= {:Ram "16GB", :Disk "1TB"}
              (scrape-attribute-table attribute-table-html config)))))
   (testing "nil values"
     (let [src {:selector "#attributes tr",
-               :label {:selector "td.label", :extractor "content"},
-               :value {:selector "td.absentclass", :extractor "content"}}
+               :label {:selector "td.label"},
+               :value {:selector "td.absentclass"}}
           config (config/parse-attribute-table src)]
       (is (= {:Ram nil, :Disk nil}
              (scrape-attribute-table attribute-table-html config)))))
   (testing "skip empty labels"
     (let [src {:selector "#attributes tr",
-               :label {:selector "td.absentclass", :extractor "content"},
-               :value {:selector "td.label + td", :extractor "content"}}
+               :label {:selector "td.absentclass"},
+               :value {:selector "td.label + td"}}
           config (config/parse-attribute-table src)]
       (is (= {}
              (scrape-attribute-table attribute-table-html config)))))
@@ -171,24 +171,24 @@
 
 (deftest test-scrape-item
   (testing "config having attributes"
-    (let [src {:attributes  [{:name "label", :selector ".label", :extractor "content"}]}
+    (let [src {:attributes  [{:name "label", :selector ".label"}]}
           config (config/parse-detail-page src "dummy")]
       (is (= {:label "Ram"}
              (scrape-item attribute-table-html config)))))
   (testing "config having attribute-table"
       (let [src {:attribute-table
                    {:selector "#attributes tr",
-                    :label {:selector "td.label", :extractor "content"},
-                    :value {:selector "td.label + td", :extractor "content"}}}
+                    :label {:selector "td.label"},
+                    :value {:selector "td.label + td"}}}
             config (config/parse-detail-page src "dummy")]
         (is (= {:Ram "16GB", :Disk "1TB"}
                (scrape-item attribute-table-html config)))))
   (testing "config having both attributes and attribute-table"
-      (let [src {:attributes  [{:name "label", :selector ".label", :extractor "content"}]
+      (let [src {:attributes  [{:name "label", :selector ".label"}]
                  :attribute-table
                    {:selector "#attributes tr",
-                    :label {:selector "td.label", :extractor "content"},
-                    :value {:selector "td.label + td", :extractor "content"}}}
+                    :label {:selector "td.label"},
+                    :value {:selector "td.label + td"}}}
             config (config/parse-detail-page src "dummy")]
         (is (= {:label "Ram" :Ram "16GB", :Disk "1TB"}
                (scrape-item attribute-table-html config))))))
@@ -213,21 +213,21 @@
 (deftest test-scrape-items
   (testing "item selector"
     (let [src {:item-selector "p"
-               :attributes  [{:name "name", :selector "span", :extractor "content"} ;TODO rm span, use root selector?
+               :attributes  [{:name "name", :selector "span"} ;TODO rm span, use root selector?
                              {:name "id", :selector "p", :extractor "attrs id"}]}
           config (config/parse-list-page src "dummy")]
       (is (= [{:name "item 1", :id "a"} {:name "item 2", :id "b"} {:name "item 3", :id "c"}]
              (scrape-items list-html config)))))
   (testing "item separator"
     (let [src {:container-selector "div" :item-separator "(?=<p)"
-               :attributes  [{:name "name", :selector "span", :extractor "content"}
+               :attributes  [{:name "name", :selector "span"}
                              {:name "id", :selector "p", :extractor "attrs id"}]}
           config (config/parse-list-page src "dummy")]
       (is (= [{:name "item 1", :id "a"} {:name "item 2", :id "b"} {:name "item 3", :id "c"}]
              (scrape-items list-html config)))))
   (testing "item separator with two containers"
     (let [src {:container-selector "div" :item-separator "(?=<p)"
-               :attributes  [{:name "name", :selector "span", :extractor "content"}
+               :attributes  [{:name "name", :selector "span"}
                              {:name "id", :selector "p", :extractor "attrs id"}]}
           config (config/parse-list-page src "dummy")]
       (is (= [{:name "item 1", :id "a"} {:name "item 2", :id "b"} {:name "item 3", :id "c"} {:name "item 4", :id "d"}]

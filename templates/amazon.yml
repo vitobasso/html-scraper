@@ -5,7 +5,6 @@ list-page:
   attributes:
     - name: 'name'
       selector: 'span.a-text-normal'
-      extractor: 'content'
     - name: 'image'
       selector: '.s-image'
       extractor: 'attrs src'
@@ -14,17 +13,13 @@ list-page:
       extractor: 'attrs href'
     - name: 'price'
       selector: '.a-price > .a-offscreen'
-      extractor: 'content'
     - name: 'rating'
       selector: '.a-icon-star-small > span'
-      extractor: 'content'
 detail-page:
   url-path: '${url}'
   attribute-table:
     selector: '.comparison_table tr.comparison_other_attribute_row'
     label:
       selector: 'th.comparison_attribute_name_column span'
-      extractor: 'content'
     value:
       selector: 'td.comparison_baseitem_column span'
-      extractor: 'content'

@@ -7,7 +7,8 @@
   (string/split str #" "))
 
 (defn- parse-extractor [str]
-  (apply comp (reverse (map keyword (split-by-space str)))))
+  (if (nil? str) :content
+    (apply comp (reverse (map keyword (split-by-space str))))))
 
 (defn parse-regex [src]
   (if src

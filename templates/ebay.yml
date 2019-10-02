@@ -5,7 +5,6 @@ list-page:
   attributes:
     - name: 'name'
       selector: '.lvtitle a'
-      extractor: 'content'
     - name: 'image'
       selector: '.lvpic img'
       extractor: 'attrs imgurl'
@@ -14,14 +13,11 @@ list-page:
       extractor: 'attrs href'
     - name: 'price'
       selector: '.lvprice span'
-      extractor: 'content'
 detail-page:
   url-path: '${url}'
   attribute-table:
     selector: 'itemAttr table tr'
     label:
       selector: 'td.attrLabels'
-      extractor: 'content'
     value:
       selector: 'td.attrLabels + td span'
-      extractor: 'content'

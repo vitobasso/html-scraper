@@ -5,7 +5,6 @@ list-page:
   attributes:
     - name: 'name'
       selector: 'h3 a'
-      extractor: 'content'
     - name: 'image'
       selector: 'img'
       extractor: 'attrs data-src'
@@ -17,10 +16,7 @@ list-page:
       extractor: 'attrs href'
     - name: 'price'
       selector: '.mp-Listing-price'
-      extractor: 'content'
     - name: 'seller'
       selector: '.mp-Listing-seller-name a'
-      extractor: 'content'
     - name: 'region'
       selector: '.mp-Listing-location'
-      extractor: 'content'
