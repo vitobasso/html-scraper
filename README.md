@@ -24,18 +24,18 @@ list-page:
   url-path: '/s?k=${search-term}&page=${page-number}'
   
   # css selector to find every item in the page 
-  item-selector: '.s-result-list > div'
+  item-select: '.s-result-list > div'
   
-  # for each attribute we define a css selector to find the data within the item html 
+  # for each property we define a css selector to find the data within the item html 
   # that was already cut out from the page 
-  attributes:
+  properties:
     - name: 'name'
-      selector: 'span.a-text-normal'
+      select: 'span.a-text-normal'
     - name: 'image'
-      selector: '.s-image'
-      extractor: 'attrs src'
+      select: '.s-image'
+      extract: 'attrs src'
     - name: 'price'
-      selector: '.a-price > .a-offscreen'
+      select: '.a-price > .a-offscreen'
 ```
 
 Ouptut:
@@ -50,14 +50,15 @@ Ouptut:
 //TODO
 
 - list-page
-    - item-selector
-    - item-separator
+    - item-select
+    - container-select, item-split
     
 - detail-page
 
-- selector
-- extractor
+- select
+- extract
 - regex
 
-- attributes
-- attribute-table
+- properties
+
+- property-table, pair-select, label, value

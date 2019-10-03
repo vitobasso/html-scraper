@@ -15,49 +15,49 @@
     {:find (-> src :find re-pattern)
      :replace (-> src :replace)}))
 
-(defn parse-attribute [src]
-  {:selector (css/parse-css-selector (:selector src))
-   :extractor (parse-extractor (:extractor src))
+(defn parse-property [src]
+  {:select (css/parse-css-selector (:select src))
+   :extract (parse-extractor (:extract src))
    :regex (parse-regex (:regex src))})
 
-(defn parse-named-attribute [src]
+(defn parse-named-property [src]
   (merge {:name (:name src)}
-         (parse-attribute src)))
+         (parse-property src)))
 
-(defn parse-attribute-table [src]
+(defn parse-property-table [src]
   (if (nil? src) nil
     (let [label (:label src)
           value (:value src)]
-      {:selector (css/parse-css-selector (:selector src))
-       :label    (parse-attribute label)
-       :value    (parse-attribute value)})))
+      {:pair-select (css/parse-css-selector (:pair-select src))
+       :label  (parse-property label)
+       :value  (parse-property value)})))
 
 (defn parse-detail-page [src home-url]
   {:url (str home-url (:url-path src)) ; TODO validate paging params
-   :attributes (map parse-named-attribute (:attributes src))
-   :attribute-table (parse-attribute-table (:attribute-table src))})
+   :properties (map parse-named-property (:properties src))
+   :property-table (parse-property-table (:property-table src))})
 
-(defn parse-item-selector [src]
-  (let [selector (:item-selector src)]
+(defn parse-item-select [src]
+  (let [selector (:item-select src)]
     (if (some? selector)
-      {:item-selector (css/parse-css-selector selector)})))
+      {:item-select (css/parse-css-selector selector)})))
 
-(defn parse-item-separator [src]
-  (let [container (:container-selector src)
-        separator (:item-separator src)]
-    (cond (and container separator)
-            {:container-selector (css/parse-css-selector container)
-             :item-separator (re-pattern separator)}
-          container (throw (Exception. "container-selector is defined but item-separator is missing."))
-          separator (throw (Exception. "item-separator was defined defined but container-selector is missing.")))))
+(defn parse-item-split [src]
+  (let [container (:container-select src)
+        split-pattern (:item-split src)]
+    (cond (and container split-pattern)
+            {:container-select (css/parse-css-selector container)
+             :item-split (re-pattern split-pattern)}
+          container (throw (Exception. "container-select is defined but item-split is missing."))
+          split-pattern (throw (Exception. "item-split was defined defined but container-select is missing.")))))
 
 (defn parse-item-selection [src]
-  (let [selector (parse-item-selector src)
-        separator (parse-item-separator src)]
+  (let [selector (parse-item-select src)
+        split-pattern (parse-item-split src)]
     (cond
-      (and selector separator) (throw (Exception. "Can't have both item-selector and item-separator defined."))
-      (not (or selector separator)) (throw (Exception. "Either item-selector or item-separator must be defined."))
-      :else (or selector separator))))
+      (and selector split-pattern) (throw (Exception. "Can't have both item-select and item-split defined."))
+      (not (or selector split-pattern)) (throw (Exception. "Either item-select or item-split must be defined."))
+      :else (or selector split-pattern))))
 
 (defn parse-list-page [src home-url]
   (merge (parse-detail-page src home-url)

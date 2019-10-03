@@ -6,7 +6,7 @@
   {:home-url "https://www.page.com"
    :list-page {
      :url-path "/searchresults.html"
-     :item-selector "#search_results .item"}
+     :item-select "#search_results .item"}
    :detail-page {
      :url-path "${url}"}})
 
@@ -26,35 +26,35 @@
   )
 
 (deftest test-item-selection
-  (testing "item-selector happy case"
+  (testing "item-select happy case"
     (is (some? (parse-config {:home-url "https://www.page.com"
                               :list-page {:url-path "/searchresults.html"
-                                          :item-selector "#search_results .item"}}))))
-  (testing "item-separator happy case"
+                                          :item-select "#search_results .item"}}))))
+  (testing "item-split happy case"
     (is (some? (parse-config {:home-url "https://www.page.com"
                               :list-page {:url-path "/searchresults.html"
-                                          :container-selector "#search_results .item"
-                                          :item-separator "regex"}}))))
-  (testing "fails when missing item-separator"
+                                          :container-select "#search_results .item"
+                                          :item-split "regex"}}))))
+  (testing "fails when missing item-split"
     (is (thrown? Exception
                  (parse-config {:home-url "https://www.page.com"
                                 :list-page {:url-path "/searchresults.html"
-                                            :container-selector "#search_results .item"}}))))
-  (testing "fails when missing container-selector"
+                                            :container-select "#search_results .item"}}))))
+  (testing "fails when missing container-select"
     (is (thrown? Exception
                  (parse-config {:home-url "https://www.page.com"
                                 :list-page {:url-path "/searchresults.html"
-                                            :item-separator "regex"}}))))
-  (testing "fails when missing all item selector params"
+                                            :item-split "regex"}}))))
+  (testing "fails when missing all item select params"
     (is (thrown? Exception
                  (parse-config {:home-url "https://www.page.com"
                                 :list-page {:url-path "/searchresults.html"}}))))
-  (testing "fails when has item-selector and container-selector at the same time"
+  (testing "fails when has item-select and container-select at the same time"
     (is (thrown? Exception
                  (parse-config {:home-url "https://www.page.com"
                                 :list-page {:url-path "/searchresults.html"
-                                            :container-selector "#search_results .item"
-                                            :item-selector "#search_results .item"}}))))
+                                            :container-select "#search_results .item"
+                                            :item-select "#search_results .item"}}))))
   )
 
-;TODO fail: invalid attribute/regex/find
+;TODO fail: invalid property/regex/find

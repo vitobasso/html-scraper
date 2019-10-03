@@ -39,8 +39,8 @@
 
 (defn extract-value [config html]
   (->> html
-       (select (:selector config))
-       (map (:extractor config))
+       (select (:select config))
+       (map (:extract config))
        (flatten)
        (filter string?)
        (map trim-value)
@@ -49,35 +49,34 @@
        (remove nil?)
        (first)))
 
-(defn scrape-attribute-row [row config]
+(defn scrape-property-row [row config]
   (let [label (extract-value (:label config) row)
         value (extract-value (:value config) row)]
     (if (nil? label) {}
       {(keyword label) value})))
 
-(defn scrape-attribute-table [full-item config]
+(defn scrape-property-table [full-item config]
   (if (nil? config) {}
-    (let [rows (select (:selector config) full-item)
-          labels-values (map #(scrape-attribute-row % config) rows)]
+    (let [rows (select (:pair-select config) full-item)
+          labels-values (map #(scrape-property-row % config) rows)]
       (into {} labels-values))))
 
 (defn scrape-item-by-table [item config]
-  (scrape-attribute-table item (:attribute-table config)))
+  (scrape-property-table item (:property-table config)))
 
-(defn scrape-attribute [full-item config]
+(defn scrape-property [full-item config]
   (if (nil? config) {}
     (let [key (keyword (:name config))
           value (extract-value config full-item)]
       {key value})))
 
-(defn scrape-item-by-attrs [item config]
-  (let [attr-config (:attributes config)
-        scrape-one-attr #(scrape-attribute item %)
-        all-attrs (map scrape-one-attr attr-config)]
-    (apply merge all-attrs)))
+(defn scrape-item-by-properties [item config]
+  (let [scrape-one-property #(scrape-property item %)
+        all-properties (map scrape-one-property (:properties config))]
+    (apply merge all-properties)))
 
 (defn scrape-item [item config]
-  (merge (scrape-item-by-attrs item config)
+  (merge (scrape-item-by-properties item config)
          (scrape-item-by-table item config)))
 
 (defn parse-html [html-str]
@@ -85,13 +84,13 @@
 
 (defn split-items [container config]
   (let [container-html (r/hickory-to-html container)
-        separator (re-pattern (:item-separator config))
-        item-htmls (string/split container-html separator)]
+        split-pattern (re-pattern (:item-split config))
+        item-htmls (string/split container-html split-pattern)]
     (map parse-html item-htmls)))
 
-(defn select-items-by-separator [full-page config]
+(defn select-items-by-split [full-page config]
   (->> full-page
-       (select (:container-selector config))
+       (select (:container-select config))
        (filter map?)
        (map #(:content %))
        (flatten)
@@ -100,9 +99,9 @@
        (flatten)))
 
 (defn select-items [full-page config]
-  (if (:item-selector config)
-    (select (:item-selector config) full-page)
-    (select-items-by-separator full-page config)))
+  (if (:item-select config)
+    (select (:item-select config) full-page)
+    (select-items-by-split full-page config)))
 
 (defn scrape-items [full-page config]
   (let [items (select-items full-page config)]

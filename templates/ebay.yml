@@ -1,23 +1,23 @@
 home-url: 'https://www.ebay.co.uk'
 list-page:
   url-path: '/sch/i.html?_nkw=${search-term}&_pgn=${page-number}'
-  item-selector: '.sresult'
-  attributes:
+  item-select: '.sresult'
+  properties:
     - name: 'name'
-      selector: '.lvtitle a'
+      select: '.lvtitle a'
     - name: 'image'
-      selector: '.lvpic img'
-      extractor: 'attrs imgurl'
+      select: '.lvpic img'
+      extract: 'attrs imgurl'
     - name: 'url'
-      selector: 'a'
-      extractor: 'attrs href'
+      select: 'a'
+      extract: 'attrs href'
     - name: 'price'
-      selector: '.lvprice span'
+      select: '.lvprice span'
 detail-page:
   url-path: '${url}'
-  attribute-table:
-    selector: 'itemAttr table tr'
+  property-table:
+    pair-select: 'itemAttr table tr'
     label:
-      selector: 'td.attrLabels'
+      select: 'td.attrLabels'
     value:
-      selector: 'td.attrLabels + td span'
+      select: 'td.attrLabels + td span'

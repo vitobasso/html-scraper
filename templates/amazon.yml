@@ -1,25 +1,25 @@
 home-url: 'https://www.amazon.co.uk'
 list-page:
   url-path: '/s?k=${search-term}&page=${page-number}'
-  item-selector: '.s-result-list > div'
-  attributes:
+  item-select: '.s-result-list > div'
+  properties:
     - name: 'name'
-      selector: 'span.a-text-normal'
+      select: 'span.a-text-normal'
     - name: 'image'
-      selector: '.s-image'
-      extractor: 'attrs src'
+      select: '.s-image'
+      extract: 'attrs src'
     - name: 'url'
-      selector: 'a.a-text-normal'
-      extractor: 'attrs href'
+      select: 'a.a-text-normal'
+      extract: 'attrs href'
     - name: 'price'
-      selector: '.a-price > .a-offscreen'
+      select: '.a-price > .a-offscreen'
     - name: 'rating'
-      selector: '.a-icon-star-small > span'
+      select: '.a-icon-star-small > span'
 detail-page:
   url-path: '${url}'
-  attribute-table:
-    selector: '.comparison_table tr.comparison_other_attribute_row'
+  property-table:
+    pair-select: '.comparison_table tr.comparison_other_attribute_row'
     label:
-      selector: 'th.comparison_attribute_name_column span'
+      select: 'th.comparison_attribute_name_column span'
     value:
-      selector: 'td.comparison_baseitem_column span'
+      select: 'td.comparison_baseitem_column span'
