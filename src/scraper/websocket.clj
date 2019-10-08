@@ -23,13 +23,11 @@
   (string/replace value #"," "."))
 
 (defn convert-price [price]
-  (let [value (->> price
-                   (re-find #"\d+([\.,]\d+)?")
-                   first
-                   replace-comma
-                   Double.)]
-    {:currency "$",
-     :value    value}))
+  (->> price
+       (re-find #"\d+([\.,]\d+)?")
+       first
+       replace-comma
+       Double.))
 
 (defn convert-item [item]
   (-> item
