@@ -13,10 +13,12 @@ list-page:
       extract: 'attrs href'
     - name: 'price'
       select: '.lvprice span'
+    - name: 'delivery-by'
+      select: 'span.fnftxt div b'
 detail-page:
   url-path: '${url}'
   property-tables:
-    - pair-select: 'itemAttr table tr'
+    - pair-select: '.itemAttr table tr'
       label:
         select: 'td.attrLabels'
       value:

@@ -23,3 +23,13 @@ detail-page:
         select: 'th.comparison_attribute_name_column span'
       value:
         select: 'td.comparison_baseitem_column span'
+    - pair-select: '#prodDetails tr'
+      label:
+        select: 'td.label'
+      value:
+        select: 'td.value'
+    - pair-select: '#detail_bullets_id li'
+      label:
+        select: 'b'
+      value:
+        select: 'li'
