@@ -61,8 +61,10 @@
           labels-values (map #(scrape-property-row % config) rows)]
       (into {} labels-values))))
 
-(defn scrape-item-by-table [item config]
-  (scrape-property-table item (:property-table config)))
+(defn scrape-item-by-tables [item config]
+  (let [scrape-one-table #(scrape-property-table item %)
+        all-tables (map scrape-one-table (:property-tables config))]
+    (apply merge all-tables)))
 
 (defn scrape-property [full-item config]
   (if (nil? config) {}
@@ -77,7 +79,7 @@
 
 (defn scrape-item [item config]
   (merge (scrape-item-by-properties item config)
-         (scrape-item-by-table item config)))
+         (scrape-item-by-tables item config)))
 
 (defn parse-html [html-str]
   (h/as-hickory (h/parse html-str)))

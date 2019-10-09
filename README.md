@@ -61,4 +61,4 @@ Ouptut:
 
 - properties
 
-- property-table, pair-select, label, value
+- property-tables, pair-select, label, value

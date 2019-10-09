@@ -175,20 +175,20 @@
           config (config/parse-detail-page src "dummy")]
       (is (= {:label "Ram"}
              (scrape-item property-table-html config)))))
-  (testing "config having property-table"
-      (let [src {:property-table
-                   {:pair-select "#properties tr",
+  (testing "config having property-tables"
+      (let [src {:property-tables
+                   [{:pair-select "#properties tr",
                     :label {:select "td.label"},
-                    :value {:select "td.label + td"}}}
+                    :value {:select "td.label + td"}}]}
             config (config/parse-detail-page src "dummy")]
         (is (= {:Ram "16GB", :Disk "1TB"}
                (scrape-item property-table-html config)))))
-  (testing "config having both properties and property-table"
+  (testing "config having both properties and property-tables"
       (let [src {:properties  [{:name "label", :select ".label"}]
-                 :property-table
-                   {:pair-select "#properties tr",
+                 :property-tables
+                   [{:pair-select "#properties tr",
                     :label {:select "td.label"},
-                    :value {:select "td.label + td"}}}
+                    :value {:select "td.label + td"}}]}
             config (config/parse-detail-page src "dummy")]
         (is (= {:label "Ram" :Ram "16GB", :Disk "1TB"}
                (scrape-item property-table-html config))))))

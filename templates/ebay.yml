@@ -15,9 +15,9 @@ list-page:
       select: '.lvprice span'
 detail-page:
   url-path: '${url}'
-  property-table:
-    pair-select: 'itemAttr table tr'
-    label:
-      select: 'td.attrLabels'
-    value:
-      select: 'td.attrLabels + td span'
+  property-tables:
+    - pair-select: 'itemAttr table tr'
+      label:
+        select: 'td.attrLabels'
+      value:
+        select: 'td.attrLabels + td span'

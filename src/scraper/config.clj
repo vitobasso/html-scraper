@@ -35,7 +35,7 @@
 (defn parse-detail-page [src home-url]
   {:url (str home-url (:url-path src)) ; TODO validate paging params
    :properties (map parse-named-property (:properties src))
-   :property-table (parse-property-table (:property-table src))})
+   :property-tables (map parse-property-table (:property-tables src))})
 
 (defn parse-item-select [src]
   (let [selector (:item-select src)]
