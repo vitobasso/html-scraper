@@ -19,20 +19,9 @@
     (swap! state assoc :source source))
     nil)
 
-(defn replace-comma [value]
-  (string/replace value #"," "."))
-
-(defn convert-price [price]
-  (->> price
-       (re-find #"\d+([\.,]\d+)?")
-       first
-       replace-comma
-       Double.))
-
 (defn convert-item [item]
   (-> item
       (assoc :id (:url item))
-      (update :price convert-price)
       (clojure.set/rename-keys {:url :link, :name :title})))
 
 (defn try-convert-item [item]
