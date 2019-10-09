@@ -32,8 +32,8 @@
        :label  (parse-property label)
        :value  (parse-property value)})))
 
-(defn parse-detail-page [src home-url]
-  {:url (str home-url (:url-path src)) ; TODO validate paging params
+(defn parse-detail-page [src]
+  {:url (:url src) ; TODO validate paging params
    :properties (map parse-named-property (:properties src))
    :property-tables (map parse-property-table (:property-tables src))})
 
@@ -59,15 +59,13 @@
       (not (or selector split-pattern)) (throw (Exception. "Either item-select or item-split must be defined."))
       :else (or selector split-pattern))))
 
-(defn parse-list-page [src home-url]
-  (merge (parse-detail-page src home-url)
+(defn parse-list-page [src]
+  (merge (parse-detail-page src)
          (parse-item-selection src)))
 
 (defn parse-config [src]
-  (let [home-url (:home-url src)]
-    {:home-url    home-url
-     :list-page   (parse-list-page (:list-page src) home-url)
-     :detail-page (parse-detail-page (:detail-page src) home-url)}))
+  {:list-page   (parse-list-page (:list-page src))
+   :detail-page (parse-detail-page (:detail-page src))})
 
 (defn load-config [name]
   (-> (str "templates/" name ".yml")

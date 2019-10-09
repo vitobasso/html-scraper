@@ -172,7 +172,7 @@
 (deftest test-scrape-item
   (testing "config having properties"
     (let [src {:properties  [{:name "label", :select ".label"}]}
-          config (config/parse-detail-page src "dummy")]
+          config (config/parse-detail-page src)]
       (is (= {:label "Ram"}
              (scrape-item property-table-html config)))))
   (testing "config having property-tables"
@@ -180,7 +180,7 @@
                    [{:pair-select "#properties tr",
                     :label {:select "td.label"},
                     :value {:select "td.label + td"}}]}
-            config (config/parse-detail-page src "dummy")]
+            config (config/parse-detail-page src)]
         (is (= {:Ram "16GB", :Disk "1TB"}
                (scrape-item property-table-html config)))))
   (testing "config having both properties and property-tables"
@@ -189,7 +189,7 @@
                    [{:pair-select "#properties tr",
                     :label {:select "td.label"},
                     :value {:select "td.label + td"}}]}
-            config (config/parse-detail-page src "dummy")]
+            config (config/parse-detail-page src)]
         (is (= {:label "Ram" :Ram "16GB", :Disk "1TB"}
                (scrape-item property-table-html config))))))
 
@@ -215,20 +215,20 @@
     (let [src {:item-select "p"
                :properties  [{:name "name", :select "span"} ;TODO rm span, use root selector?
                              {:name "id", :select "p", :extract "attrs id"}]}
-          config (config/parse-list-page src "dummy")]
+          config (config/parse-list-page src)]
       (is (= [{:name "item 1", :id "a"} {:name "item 2", :id "b"} {:name "item 3", :id "c"}]
              (scrape-items list-html config)))))
   (testing "item split"
     (let [src {:container-select "div" :item-split "(?=<p)"
                :properties  [{:name "name", :select "span"}
                              {:name "id", :select "p", :extract "attrs id"}]}
-          config (config/parse-list-page src "dummy")]
+          config (config/parse-list-page src)]
       (is (= [{:name "item 1", :id "a"} {:name "item 2", :id "b"} {:name "item 3", :id "c"}]
              (scrape-items list-html config)))))
   (testing "item split with two containers"
     (let [src {:container-select "div" :item-split "(?=<p)"
                :properties  [{:name "name", :select "span"}
                              {:name "id", :select "p", :extract "attrs id"}]}
-          config (config/parse-list-page src "dummy")]
+          config (config/parse-list-page src)]
       (is (= [{:name "item 1", :id "a"} {:name "item 2", :id "b"} {:name "item 3", :id "c"} {:name "item 4", :id "d"}]
              (scrape-items two-column-html config))))))

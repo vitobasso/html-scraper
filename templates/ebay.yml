@@ -1,6 +1,5 @@
-home-url: 'https://www.ebay.co.uk'
 list-page:
-  url-path: '/sch/i.html?_nkw=${search-term}&_pgn=${page-number}'
+  url: 'https://www.ebay.co.uk/sch/i.html?_nkw=${search-term}&_pgn=${page-number}'
   item-select: '.sresult'
   properties:
     - name: 'name'
@@ -16,7 +15,7 @@ list-page:
     - name: 'delivery-by'
       select: 'span.fnftxt div b'
 detail-page:
-  url-path: '${url}'
+  url: '${url}'
   property-tables:
     - pair-select: '.itemAttr table tr'
       label:

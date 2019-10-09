@@ -1,6 +1,5 @@
-home-url: 'https://www.spareroom.co.uk'
 list-page:
-  url-path: '/flatshare/${search-term}/page${page-number}'
+  url: 'https://www.spareroom.co.uk/flatshare/${search-term}/page${page-number}'
   item-select: '.listing-result'
   properties:
     - name: 'name'
@@ -21,7 +20,7 @@ list-page:
     - name: 'rooms'
       select: '.shortDescription'
 detail-page:
-  url-path: '${url}'
+  url: 'https://www.spareroom.co.uk${url}'
   properties:
     - name: 'station-distance'
       select: '.key-features__station-distance'

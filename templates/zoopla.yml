@@ -1,6 +1,5 @@
-home-url: 'https://www.zoopla.co.uk'
 list-page:
-  url-path: '/to-rent/property/london/?q=${search-term}&pn=${page-number}'
+  url: 'https://www.zoopla.co.uk/to-rent/property/london/?q=${search-term}&pn=${page-number}'
   item-select: '.listing-results > li'
   properties:
     - name: 'name' #TODO extract from url, make it "id"
@@ -23,7 +22,12 @@ list-page:
       select: '.listing-results-marketed span'
     - name: 'listed-date'
       select: '.listing-results-marketed small'
+      regex:
+        find: '(\S+ \S+ \S+)'
+        replace: '${1}'
     - name: 'size'
       select: '.num-sqft'
     - name: 'rooms'
       select: '.num-beds'
+detail-page:
+  url: 'https://www.zoopla.co.uk${url}'

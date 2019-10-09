@@ -1,6 +1,5 @@
-home-url: 'https://www.booking.com'
 list-page:
-  url-path: '/searchresults.en-us.html?ss=${search-term}&rows=${items-per-page}&offset=${page-offset}'
+  url: 'https://www.booking.com/searchresults.en-us.html?ss=${search-term}&rows=${items-per-page}&offset=${page-offset}'
   item-select: '#search_results_table .sr_item'
   properties:
     - name: 'name'
@@ -18,7 +17,7 @@ list-page:
     - name: 'region'
       select: '.sr_card_address_line > a.bui-link'
 detail-page:
-  url-path: '${url}'
+  url: 'https://www.booking.com${url}'
   properties:
     - name: 'address'
       select: '.hp_address_subtitle'

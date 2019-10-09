@@ -15,13 +15,11 @@ Scraping a search on amazon.co.uk using the following code snippet and template 
 
 The template file `amazon.yml`:
 ```yaml
-home-url: 'https://www.amazon.co.uk'
-
 # a "list page" will have a bunch of items that follow the same structure
 list-page:
 
   # the exact url path will vary with pagination and query params
-  url-path: '/s?k=${search-term}&page=${page-number}'
+  url: 'https://www.amazon.co.uk/s?k=${search-term}&page=${page-number}'
   
   # css selector to find every item in the page 
   item-select: '.s-result-list > div'

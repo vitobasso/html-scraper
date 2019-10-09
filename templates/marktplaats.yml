@@ -1,6 +1,5 @@
-home-url: 'https://www.marktplaats.nl/'
 list-page:
-  url-path: '/q/${search-term}/p/${page-number}/'
+  url: 'https://www.marktplaats.nl/q/${search-term}/p/${page-number}/'
   item-select: '.mp-Listing--list-item'
   properties:
     - name: 'name'
@@ -20,3 +19,5 @@ list-page:
       select: '.mp-Listing-seller-name a'
     - name: 'region'
       select: '.mp-Listing-location'
+detail-page:
+  url: 'https://www.marktplaats.nl${url}'
