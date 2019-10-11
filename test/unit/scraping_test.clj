@@ -1,4 +1,4 @@
-(ns scraper.scraping-test
+(ns unit.scraping-test
   (:require [clojure.test :refer :all]
             [scraper.scraping :refer :all]
             [scraper.config :as config]))

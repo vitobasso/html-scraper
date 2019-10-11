@@ -1,5 +1,9 @@
 
 - advanced search
 
+- template can merge fields by name
+    e.g. RAM Size, Memory Storage Capacity -> memory
+         Hard Disk Size, Storage Capacity, Hard Drive Size -> hard-disk
+
 - csv
     https://github.com/clojure/data.csv
