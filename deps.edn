@@ -6,4 +6,7 @@
                                  :sha "ccbcfa6731d3cce87f96886afb5e762828931ee2"}}
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps  {lambdaisland/kaocha {:mvn/version "0.0-529"}}
-                  :main-opts   ["-m" "kaocha.runner"]}}}
+                  :main-opts   ["-m" "kaocha.runner" "unit"]}
+           :it-test {:extra-paths ["test"]
+                     :extra-deps  {lambdaisland/kaocha {:mvn/version "0.0-529"}}
+                     :main-opts   ["-m" "kaocha.runner" "integration"]}}}
