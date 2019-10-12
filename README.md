@@ -45,18 +45,77 @@ Ouptut:
 ```
 
 # Template file reference
-//TODO
 
-- list-page
-    - item-select
-    - container-select, item-split
+
+## Basic scraping
+
+#### select
+Finds html elements based on a css selector.
+Scrapes the text contained directly in the html element. Nested elements are ignored.
+```yaml
+name: 'price'
+select: '.listingPrice'
+```
+##### In
+```html
+<strong class="listingPrice">£1,668 <abbr>pcm</abbr></strong>
+```
+##### Out
+```clojure
+{:price "£1,668"}
+```
+
+#### extract
+Scrapes from an html attribute rather than the inner text.
+```yaml
+name: 'image'
+select: 'img'
+extract: 'attrs src'
+```
+##### In
+```html
+<img src="https://images.com/image-id">
+```
+##### Out
+```clojure
+{:image "https://images.com/image-id"}
+```
+
+#### regex
+```html
+<script>
+    SR.listing.detail.init({
+      coords: {
+        lat: '51.5212447680929',
+        lon: '-0.057351967042925'
+      }
+    });
+</script>
+```
+##### Template
+```yaml
+name: 'latlng'
+select: 'script'
+regex:
+  find: '(?s)lat:\s*''([0-9\.\-]+).*lon:\s*''([0-9\.\-]+)'
+  replace: '${1},${2}'
+```
+##### Output
+```clojure
+{:latlng "51.5212447680929,-0.057351967042925"}
+```
+
+
+
+#### list-page
+##### item-select
+##### container-select, item-split
     
-- detail-page
+#### detail-page
 
-- select
-- extract
-- regex
+#### properties
 
-- properties
-
-- property-tables, pair-select, label, value
+#### property-tables
+##### pair-select
+##### label
+##### value
