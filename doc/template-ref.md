@@ -8,10 +8,13 @@ Defines the css selector to find html elements.
 The text contained directly within the selected element will be scraped. Nested elements will be ignored.
 
 ### extract
-Optionally defines an html attribute to scrape from rather than the inner text.
+Defines which part of the selected html element to scrape from. E.g. an attribute. 
+Optional: By default the inner text will be scraped.
 
 ### regex
-Transforms the scraped text based on regex. Can be combined with [extract](#extract).
+Transforms the scraped text based on the `find` regex.
+The output is according to `replace` with placeholders for regex capturing groups: `${1}`, `${2}`, etc.
+It's optional.
 
 ---
 **Example 1**: Scraping the price and image of an product from being sold in a website.
