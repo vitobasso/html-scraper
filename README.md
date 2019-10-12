@@ -1,8 +1,8 @@
-A HTML scraper with page templates powered by css selectors and regex.
+A HTML scraper with page templates based on css selectors and regex.
 
-# Example
+## Example
 
-Scraping a search on amazon.co.uk using the following code snippet and template definition: 
+Scraping a search on amazon.co.uk: 
 
 ```clojure
 (require '[scraper.scraping :as scr])
@@ -13,7 +13,7 @@ Scraping a search on amazon.co.uk using the following code snippet and template 
 (scr/scrape-list "cardboard boxes"    1       template) 
 ```
 
-The template file `amazon.yml`:
+A template file `amazon.yml`:
 ```yaml
 # a "list page" will have a bunch of items that follow the same structure
 list-page:
@@ -44,19 +44,6 @@ Ouptut:
  ... 
 ```
 
-# Template file reference
-//TODO
+There is a [reference document](doc/template-ref.md) about the template file.
 
-- list-page
-    - item-select
-    - container-select, item-split
-    
-- detail-page
 
-- select
-- extract
-- regex
-
-- properties
-
-- property-tables, pair-select, label, value
