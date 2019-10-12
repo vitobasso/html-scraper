@@ -13,7 +13,7 @@ Defines which part of the selected html element to scrape from. E.g. an attribut
 Optional: By default the inner text will be scraped.
 
 ---
-**Example 1**: Scraping the price and image of an product from being sold in a website.
+**Example 1**: Scraping the price and image of a product in a website.
 
 Input HTML:
 ```html
