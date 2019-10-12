@@ -4,17 +4,17 @@ This document describes the keywords used in a template file.
 `select` `extract` `regex` are used in various parts of the template. 
 
 ### select
-Finds html elements based on a css selector.
-Scrapes the text contained directly in the html element. Nested elements are ignored.
+Defines the css selector to find html elements.
+The text contained directly within the selected element will be scraped. Nested elements will be ignored.
 
 ### extract
-Scrapes from an html attribute rather than the inner text.
+Optionally defines an html attribute to scrape from rather than the inner text.
 
 ### regex
 Transforms the scraped text based on regex. Can be combined with [extract](#extract).
 
 ---
-**Example 1**: Scraping the price and image of an item from an e-commerce site.
+**Example 1**: Scraping the price and image of an product from being sold in a website.
 
 Input HTML:
 ```html
@@ -39,16 +39,9 @@ Output:
  :image "https://images.com/image-id"}
 ```
 
-**Example 2**: Scraping latitude and longitude from a page that displays something in a map. 
-The values could be found in the source code, under an script tag.
-```yaml
-name: 'latlng'
-select: 'script'
-regex:
-  find: '(?s)lat:\s*''([0-9\.\-]+).*lon:\s*''([0-9\.\-]+)'
-  replace: '${1},${2}'
-```
-In:
+**Example 2**: Scraping latitude and longitude from a page that displays something in a map.
+
+Input HTML:
 ```html
 <script>
     MapLibrary.init({
@@ -59,12 +52,22 @@ In:
     });
 </script>
 ```
-Out:
+
+Part of the template file:
+```yaml
+- name: 'latlng'
+  select: 'script'
+  regex:
+    find: '(?s)lat:\s*''([0-9\.\-]+).*lon:\s*''([0-9\.\-]+)'
+    replace: '${1},${2}'
+```
+
+Output:
 ```clojure
 {:latlng "51.5212447680929,-0.057351967042925"}
 ```
 
-
+---
 ## Page scraping
 //TODO
 
