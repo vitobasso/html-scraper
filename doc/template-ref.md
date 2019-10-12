@@ -4,19 +4,13 @@ This document describes the keywords used in a template file.
 `select` `extract` `regex` are the basic keywords used in various parts of the template. 
 
 ### select
-Defines the css selector to find html elements.
+Defines a css selector to find which html elements to scrape from.
 The text contained directly within the selected element will be scraped. Nested elements will be ignored.
 
 ### extract
 Defines which part of the selected html element to scrape from. E.g. an attribute. 
 
 Optional: By default the inner text will be scraped.
-
-### regex
-Transforms the scraped text based on the `find` regex.
-The output will be according to `replace` with placeholders for regex capturing groups: `${1}`, `${2}`, etc.
-
-Optional.
 
 ---
 **Example 1**: Scraping the price and image of an product from being sold in a website.
@@ -45,6 +39,15 @@ Output:
  :image "https://images.com/image-id"}
 ```
 
+---
+
+### regex
+Transforms the scraped text based on the `find` regex.
+The output will be according to `replace` with placeholders for regex capturing groups: `${1}`, `${2}`, etc.
+
+Optional.
+
+---
 **Example 2**: Scraping latitude and longitude from a page that displays something in a map.
 
 Input HTML:
