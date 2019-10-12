@@ -1,7 +1,7 @@
 This document describes the keywords used in a template file.
 
 ## Common keywords
-`select` `extract` `regex` are used in various parts of the template. 
+`select` `extract` `regex` are the basic keywords used in various parts of the template. 
 
 ### select
 Defines the css selector to find html elements.
@@ -31,11 +31,12 @@ Input HTML:
 
 Part of the template file:
 ```yaml
-- name: 'price'
-  select: '.listingPrice'
-- name: 'image'
-  select: 'img'
-  extract: 'attrs src'
+properties:
+  - name: 'price'
+    select: '.listingPrice'
+  - name: 'image'
+    select: 'img'
+    extract: 'attrs src'
 ```
 
 Output:
@@ -60,11 +61,12 @@ Input HTML:
 
 Part of the template file:
 ```yaml
-- name: 'latlng'
-  select: 'script'
-  regex:
-    find: '(?s)lat:\s*''([0-9\.\-]+).*lon:\s*''([0-9\.\-]+)'
-    replace: '${1},${2}'
+properties:
+  - name: 'latlng'
+    select: 'script'
+    regex:
+      find: '(?s)lat:\s*''([0-9\.\-]+).*lon:\s*''([0-9\.\-]+)'
+      replace: '${1},${2}'
 ```
 
 Output:
@@ -77,17 +79,13 @@ Output:
 //TODO
 
 ### list-page
-#### item-select
-#### container-select, item-split
-### properties
-    
-### detail-page
+- `item-select` 
+- `container-select`, `item-split`
 
+### detail-page
 
 ## Scraping multiple properties at once
 //TODO
 
 ### property-tables
-#### pair-select
-#### label
-#### value
+`pair-select`, `label`, `value`
