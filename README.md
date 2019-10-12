@@ -44,5 +44,6 @@ Ouptut:
  ... 
 ```
 
-See [what else you can do](doc/template-ref.md) with a template file.
+There is a [reference document](doc/template-ref.md) about the template file.
+
 
