@@ -16,7 +16,7 @@
       (swap! state assoc :config config)))
 
   (testing "list"
-    (let [list (scr/scrape-list "cardboard boxes" 1 (:config @state))]
+    (let [list (scr/scrape-list (:config @state) {:search-term "cardboard boxes" :page-number "1"})]
       (are [x] (true? x)
         (-> list count (> 10))
         (-> list first :name string?)
@@ -26,5 +26,5 @@
       (swap! state assoc :item (first list))))
 
   (testing "details"
-    (let [details (scr/scrape-detail (:item @state) (:config @state))]
+    (let [details (scr/scrape-detail (:config @state) (:item @state))]
       (is (-> details count (> 10)))))))

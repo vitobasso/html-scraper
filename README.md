@@ -7,10 +7,11 @@ Scraping a search on amazon.co.uk:
 ```clojure
 (require '[scraper.scraping :as scr])
 (require '[scraper.config :as cfg])
-(def template (cfg/load-config "amazon"))
 
-;                search term          page
-(scr/scrape-list "cardboard boxes"    1       template) 
+(def template (cfg/load-config "amazon"))
+(scr/scrape-list template 
+  :search-term "cardboard boxes"
+  :page-number "1") 
 ```
 
 A template file `amazon.yml`:

@@ -109,25 +109,30 @@
   (let [items (select-items full-page config)]
     (map #(scrape-item % config) items)))
 
-(defn build-search-url [url-template search-term page-number]
-  (let [items-per-page 25 ;; TODO get from config
-        page-offset (* (- page-number 1) items-per-page)
-        vars {:search-term search-term
-              :page-number (str page-number)
-              :items-per-page (str items-per-page)
-              :page-offset (str page-offset)}]
-    (replace-vars url-template vars)))
+(defn derive-paging-params [given-params]
+  (let [default-page-number "1"
+        default-items-per-page "25" ;; TODO get default from config
+        page-number (or (:page-number given-params) default-page-number)
+        items-per-page (or (:items-per-page given-params) default-items-per-page)
+        page-offset (or (:page-offset given-params) (* (- (bigint page-number) 1) (bigint items-per-page)))]
+    (merge given-params
+           {:page-number    (str page-number)
+            :items-per-page (str items-per-page)
+            :page-offset    (str page-offset)})))
 
-(defn scrape-list [search-term page-number config]
+(defn build-search-url [url-template params]
+  (replace-vars url-template (derive-paging-params params)))
+
+(defn scrape-list [config params]
   (let [list-config (:list-page config)
         url-template (:url list-config)
-        url (build-search-url url-template search-term page-number)
+        url (build-search-url url-template params)
         response-body (:body (client/get url))
         parsed-html (parse-html response-body)]
     (prn "scrape-list: " url)
     (scrape-items parsed-html list-config)))
 
-(defn scrape-detail [item-kv config]
+(defn scrape-detail [config item-kv]
   (let [detail-config (:detail-page config)
         url-template (:url detail-config)
         url (replace-vars url-template item-kv)
