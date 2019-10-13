@@ -33,7 +33,7 @@
         source   (:source @state)
         keywords (:keywords params)
         page     (Integer. (:page params))
-        results   (s/page source keywords page)]
+        results   (s/page source {:search-term keywords :page-number page})]
     {:subject "items",
      :params  raw-params,
      :content (remove nil? (map try-convert-item results))}))

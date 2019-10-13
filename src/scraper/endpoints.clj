@@ -5,10 +5,10 @@
 (defn sites []
   (cfg/list-configs))
 
-(defn page [site search-term page-number]
-  (let [config (cfg/load-config site)]
-        (scr/scrape-list search-term page-number config)))
+(defn page [site-name params]
+  (let [config (cfg/load-config site-name)]
+        (scr/scrape-list config params)))
 
 (defn detail [site basic-item]
   (let [config (cfg/load-config site)]
-        (scr/scrape-detail basic-item config)))
+        (scr/scrape-detail config basic-item)))
