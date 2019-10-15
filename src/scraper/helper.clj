@@ -31,12 +31,10 @@
             :items-per-page (str items-per-page)
             :page-offset    (str page-offset)})))
 
-(defn build-search-url [url-template params]
-  (s/replace-vars url-template (derive-paging-params params)))
-
 (defn list-url [config params]
-  (let [url-template (-> config :list-page :url)]
-    (build-search-url url-template params)))
+  (let [url-template (-> config :list-page :url)
+        derived-params (derive-paging-params params)]
+    (s/replace-vars url-template derived-params)))
 
 (defn detail-url [config item-kv]
   (let [url-template (-> config :detail-page :url)]
