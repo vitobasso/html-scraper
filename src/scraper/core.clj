@@ -22,7 +22,7 @@
         var-map (zipmap counting-keys values)]
     (replace-vars str-template var-map)))
 
-(defn regex-extract [value config]
+(defn regex-extract [config value]
   (if config
     (let [[match & groups] (re-find (:find config) value)
           template (:replace config)]
@@ -44,76 +44,76 @@
        (filter string?)
        (map trim-value)
        (remove empty?)
-       (map #(regex-extract % (:regex config)))
+       (map #(regex-extract (:regex config) %))
        (remove nil?)
        (first)))
 
-(defn scrape-property-row [row config]
+(defn scrape-property-row [config row]
   (let [label (extract-value (:label config) row)
         value (extract-value (:value config) row)]
     (if (nil? label) {}
       {(keyword label) value})))
 
-(defn scrape-property-table [full-item config]
+(defn scrape-property-table [config full-item]
   (if (nil? config) {}
     (let [rows (select (:pair-select config) full-item)
-          labels-values (map #(scrape-property-row % config) rows)]
+          labels-values (map #(scrape-property-row config %) rows)]
       (into {} labels-values))))
 
-(defn scrape-item-by-tables [item config]
-  (let [scrape-one-table #(scrape-property-table item %)
+(defn scrape-item-by-tables [config item]
+  (let [scrape-one-table #(scrape-property-table % item)
         all-tables (map scrape-one-table (:property-tables config))]
     (apply merge all-tables)))
 
-(defn scrape-property [full-item config]
+(defn scrape-property [config full-item]
   (if (nil? config) {}
     (let [key (keyword (:name config))
           value (extract-value config full-item)]
       {key value})))
 
-(defn scrape-item-by-properties [item config]
-  (let [scrape-one-property #(scrape-property item %)
+(defn scrape-item-by-properties [config item]
+  (let [scrape-one-property #(scrape-property % item)
         all-properties (map scrape-one-property (:properties config))]
     (apply merge all-properties)))
 
-(defn scrape-item [item config]
-  (merge (scrape-item-by-properties item config)
-         (scrape-item-by-tables item config)))
+(defn scrape-item [config item]
+  (merge (scrape-item-by-properties config item)
+         (scrape-item-by-tables config item)))
 
 (defn parse-html [html-str]
   (h/as-hickory (h/parse html-str)))
 
-(defn split-items [container config]
+(defn split-items [config container]
   (let [container-html (r/hickory-to-html container)
         split-pattern (re-pattern (:item-split config))
         item-htmls (string/split container-html split-pattern)]
     (map parse-html item-htmls)))
 
-(defn select-items-by-split [full-page config]
+(defn select-items-by-split [config full-page]
   (->> full-page
        (select (:container-select config))
        (filter map?)
        (map #(:content %))
        (flatten)
        (filter map?)
-       (map #(split-items % config))
+       (map #(split-items config %))
        (flatten)))
 
-(defn select-items [full-page config]
+(defn select-items [config full-page]
   (if (:item-select config)
     (select (:item-select config) full-page)
-    (select-items-by-split full-page config)))
+    (select-items-by-split config full-page)))
 
-(defn scrape-items [full-page config]
-  (let [items (select-items full-page config)]
-    (map #(scrape-item % config) items)))
+(defn scrape-items [config full-page]
+  (let [items (select-items config full-page)]
+    (map #(scrape-item config %) items)))
 
 (defn scrape-list [config html]
   (let [list-config (:list-page config)
         parsed-html (parse-html html)]
-    (scrape-items parsed-html list-config)))
+    (scrape-items list-config parsed-html)))
 
 (defn scrape-detail [config html]
   (let [detail-config (:detail-page config)
         parsed-html (parse-html html)]
-    (scrape-item parsed-html detail-config)))
+    (scrape-item detail-config parsed-html)))

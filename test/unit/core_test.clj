@@ -6,19 +6,19 @@
 (deftest test-regex-extract
   (testing "extract one thing"
     (is (= "£10"
-           (regex-extract "it costs 10 pounds" {:find #"\D*(\d+)\D*", :replace "£${1}"}))))
+           (regex-extract {:find #"\D*(\d+)\D*", :replace "£${1}"} "it costs 10 pounds"))))
   (testing "extract two things"
     (is (= "£10.50"
-           (regex-extract "it costs 10 pounds and 50 pence" {:find #"\D*(\d+)\D*(\d+)\D*", :replace "£${1}.${2}"}))))
+           (regex-extract {:find #"\D*(\d+)\D*(\d+)\D*", :replace "£${1}.${2}"} "it costs 10 pounds and 50 pence"))))
   (testing "if no config, bypass"
     (is (= "bla bla"
-           (regex-extract "bla bla" nil))))
+           (regex-extract nil "bla bla"))))
   (testing "nil on mismatch"
     (is (= nil
-           (regex-extract "no numbers" {:find #"(\d+)" :replace "${1}"}))))
+           (regex-extract {:find #"(\d+)" :replace "${1}"} "no numbers"))))
   (testing "if more regex groups than replace vars, ignore the extra groups"
     (is (= "750"
-           (regex-extract "£750 pcm" {:find #"(\d+([\.,]\d+)?)" :replace "${1}"}))))
+           (regex-extract {:find #"(\d+([\.,]\d+)?)" :replace "${1}"} "£750 pcm"))))
   ;;TODO escaped $
   ;;TODO config missing :find or :replace
   )
@@ -83,36 +83,36 @@
     (let [src {:name "name", :select ".a-name"}
           config (config/parse-named-property src)]
       (is (= {:name "the name"}
-             (scrape-property item-html config)))))
+             (scrape-property config item-html)))))
   (testing "id and property"
     (let [src {:name "image", :select "#foo img", :extract "attrs src"}
           config (config/parse-named-property src)]
       (is (= {:image "image.jpg"}
-             (scrape-property item-html config)))))
+             (scrape-property config item-html)))))
   (testing "text with element siblings"
     (let [src {:name "name", :select "#foo"}
           config (config/parse-named-property src)]
       (is (= {:name "some text"}
-             (scrape-property item-html config)))))
+             (scrape-property config item-html)))))
   (testing "matching regex"
     (let [src {:name "name", :select "p", :regex {:find "(.*2nd.*)"}}
           config (config/parse-named-property src)]
       (is (= {:name "text in the 2nd p tag"}
-             (scrape-property item-html config)))))
+             (scrape-property config item-html)))))
   (testing "matching regex fails"
     (let [src {:name "name", :select "p", :regex {:find "wont match this"}}
           config (config/parse-named-property src)]
       (is (= {:name nil}
-             (scrape-property item-html config)))))
+             (scrape-property config item-html)))))
   (testing "match and replace regex"
     (let [src {:name "name", :select "p", :regex {:find "text in the (.+)", :replace "${1}"}}
           config (config/parse-named-property src)]
       (is (= {:name "2nd p tag"}
-             (scrape-property item-html config)))))
+             (scrape-property config item-html)))))
   (testing "empty if nil config"
     (let [config nil]
       (is (= {}
-             (scrape-property item-html config))))))
+             (scrape-property config item-html))))))
 
 (def property-table-html (parse-html "
 <table id='properties'>
@@ -133,25 +133,25 @@
                :value {:select "td.label + td"}}
           config (config/parse-property-table src)]
       (is (= {:Ram "16GB", :Disk "1TB"}
-             (scrape-property-table property-table-html config)))))
+             (scrape-property-table config property-table-html)))))
   (testing "nil values"
     (let [src {:pair-select "#properties tr",
                :label {:select "td.label"},
                :value {:select "td.absentclass"}}
           config (config/parse-property-table src)]
       (is (= {:Ram nil, :Disk nil}
-             (scrape-property-table property-table-html config)))))
+             (scrape-property-table config property-table-html)))))
   (testing "skip empty labels"
     (let [src {:pair-select "#properties tr",
                :label {:select "td.absentclass"},
                :value {:select "td.label + td"}}
           config (config/parse-property-table src)]
       (is (= {}
-             (scrape-property-table property-table-html config)))))
+             (scrape-property-table config property-table-html)))))
   (testing "empty if nil config"
     (let [config nil]
       (is (= {}
-             (scrape-property-table property-table-html config))))))
+             (scrape-property-table config property-table-html))))))
 
 
 (deftest test-scrape-item
@@ -159,7 +159,7 @@
     (let [src {:properties  [{:name "label", :select ".label"}]}
           config (config/parse-detail-page src)]
       (is (= {:label "Ram"}
-             (scrape-item property-table-html config)))))
+             (scrape-item config property-table-html)))))
   (testing "config having property-tables"
       (let [src {:property-tables
                    [{:pair-select "#properties tr",
@@ -167,7 +167,7 @@
                     :value {:select "td.label + td"}}]}
             config (config/parse-detail-page src)]
         (is (= {:Ram "16GB", :Disk "1TB"}
-               (scrape-item property-table-html config)))))
+               (scrape-item config property-table-html)))))
   (testing "config having both properties and property-tables"
       (let [src {:properties  [{:name "label", :select ".label"}]
                  :property-tables
@@ -176,7 +176,7 @@
                     :value {:select "td.label + td"}}]}
             config (config/parse-detail-page src)]
         (is (= {:label "Ram" :Ram "16GB", :Disk "1TB"}
-               (scrape-item property-table-html config))))))
+               (scrape-item config property-table-html))))))
 
 (def list-html (parse-html "
 <div>
@@ -202,18 +202,18 @@
                              {:name "id", :select "p", :extract "attrs id"}]}
           config (config/parse-list-page src)]
       (is (= [{:name "item 1", :id "a"} {:name "item 2", :id "b"} {:name "item 3", :id "c"}]
-             (scrape-items list-html config)))))
+             (scrape-items config list-html)))))
   (testing "item split"
     (let [src {:container-select "div" :item-split "(?=<p)"
                :properties  [{:name "name", :select "span"}
                              {:name "id", :select "p", :extract "attrs id"}]}
           config (config/parse-list-page src)]
       (is (= [{:name "item 1", :id "a"} {:name "item 2", :id "b"} {:name "item 3", :id "c"}]
-             (scrape-items list-html config)))))
+             (scrape-items config list-html)))))
   (testing "item split with two containers"
     (let [src {:container-select "div" :item-split "(?=<p)"
                :properties  [{:name "name", :select "span"}
                              {:name "id", :select "p", :extract "attrs id"}]}
           config (config/parse-list-page src)]
       (is (= [{:name "item 1", :id "a"} {:name "item 2", :id "b"} {:name "item 3", :id "c"} {:name "item 4", :id "d"}]
-             (scrape-items two-column-html config))))))
+             (scrape-items config two-column-html))))))
