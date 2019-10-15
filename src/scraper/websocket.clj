@@ -1,14 +1,13 @@
 (ns scraper.websocket
-  (:require [clojure.string :as string]
-            [clojure.data.json :as json]
-            [org.httpkit.server :as h]
-            [scraper.endpoints :as s]))
+  (:require [clojure.data.json :as json]
+            [org.httpkit.server :as w]
+            [scraper.helper :as s]))
 
 (def state (atom {}))
 
 (defn list-sources [_]
   {:subject "list-sources",
-   :content (s/sites)})
+   :content (s/list-configs)})
 
 (defn map-keys [f map]
   (reduce-kv (fn [m k v] (assoc m (f k) v)) {} map))
@@ -33,7 +32,7 @@
         source   (:source @state)
         keywords (:keywords params)
         page     (Integer. (:page params))
-        results   (s/page source {:search-term keywords :page-number page})]
+        results   (s/scrape-list source {:search-term keywords :page-number page})]
     {:subject "items",
      :params  raw-params,
      :content (remove nil? (map try-convert-item results))}))
@@ -42,7 +41,7 @@
   (let [params   (map-keys keyword raw-params)
         source   (:source @state)
         item     (:item params)
-        result   (s/detail source item)]
+        result   (s/scrape-detail source item)]
     {:subject "detail",
      :params  raw-params,
      :content result}))
@@ -68,7 +67,7 @@
   (if result
     (->> result
          json/write-str
-         (h/send! channel))))
+         (w/send! channel))))
 
 (defn receive-message [msg channel]
   (-> msg
@@ -77,9 +76,9 @@
       (maybe-respond channel)))
 
 (defn handler [request]
-  (h/with-channel request channel
-                  (h/on-close channel (fn [status] (println "client close it" status)))
-                  (h/on-receive channel (fn [data] (receive-message data channel)))))
+  (w/with-channel request channel
+                  (w/on-close channel (fn [status] (println "client close it" status)))
+                  (w/on-receive channel (fn [data] (receive-message data channel)))))
 
-(h/run-server handler {:port 8080}) ;TODO get port from config
+(w/run-server handler {:port 8080}) ;TODO get port from config
 
