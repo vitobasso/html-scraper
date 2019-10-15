@@ -5,11 +5,9 @@ A HTML scraper with page templates based on css selectors and regex.
 Scraping a search on amazon.co.uk: 
 
 ```clojure
-(require '[scraper.scraping :as scr])
-(require '[scraper.config :as cfg])
+(require '[scraper.helper :as s])
 
-(def template (cfg/load-config "amazon"))
-(scr/scrape-list template 
+(s/scrape-list "amazon"  
   :search-term "cardboard boxes"
   :page-number "1") 
 ```

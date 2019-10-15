@@ -1,9 +1,8 @@
-(ns scraper.scraping
+(ns scraper.core
     (:require [hickory.core :as h])
     (:require [hickory.select :as s])
     (:require [hickory.render :as r])
-    (:require [clojure.string :as string])
-    (:require [clj-http.client :as client]))
+    (:require [clojure.string :as string]))
 
 (defn trim-value [maybe-value]
   (if (some? maybe-value) (string/trim maybe-value)))
@@ -109,34 +108,12 @@
   (let [items (select-items full-page config)]
     (map #(scrape-item % config) items)))
 
-(defn derive-paging-params [given-params]
-  (let [default-page-number "1"
-        default-items-per-page "25" ;; TODO get default from config
-        page-number (or (:page-number given-params) default-page-number)
-        items-per-page (or (:items-per-page given-params) default-items-per-page)
-        page-offset (or (:page-offset given-params) (* (- (bigint page-number) 1) (bigint items-per-page)))]
-    (merge given-params
-           {:page-number    (str page-number)
-            :items-per-page (str items-per-page)
-            :page-offset    (str page-offset)})))
-
-(defn build-search-url [url-template params]
-  (replace-vars url-template (derive-paging-params params)))
-
-(defn scrape-list [config params]
+(defn scrape-list [config html]
   (let [list-config (:list-page config)
-        url-template (:url list-config)
-        url (build-search-url url-template params)
-        response-body (:body (client/get url))
-        parsed-html (parse-html response-body)]
-    (prn "scrape-list: " url)
+        parsed-html (parse-html html)]
     (scrape-items parsed-html list-config)))
 
-(defn scrape-detail [config item-kv]
+(defn scrape-detail [config html]
   (let [detail-config (:detail-page config)
-        url-template (:url detail-config)
-        url (replace-vars url-template item-kv)
-        response-body (:body (client/get url))
-        parsed-html (parse-html response-body)]
-    (prn "scrape-detail: " url)
+        parsed-html (parse-html html)]
     (scrape-item parsed-html detail-config)))

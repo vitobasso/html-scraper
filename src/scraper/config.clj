@@ -1,7 +1,6 @@
 (ns scraper.config
   (:require [hickory-css-selectors :as css])
-  (:require [clojure.string :as string])
-  (:require [yaml.core :as yaml]))
+  (:require [clojure.string :as string]))
 
 (defn- split-by-space [str]
   (string/split str #" "))
@@ -66,19 +65,3 @@
 (defn parse-config [src]
   {:list-page   (parse-list-page (:list-page src))
    :detail-page (parse-detail-page (:detail-page src))})
-
-(defn load-config [name]
-  (-> (str "templates/" name ".yml")
-      yaml/from-file
-      parse-config))
-
-(defn extract-site-name [file-name]
-  (let [[_ site-name] (re-find #"(.*)\.ya?ml" file-name)]
-    site-name))
-
-(defn list-configs []
-  (->> (clojure.java.io/file "templates")
-       .listFiles
-       (map #(.getName %))
-       (map extract-site-name)
-       (remove nil?)))

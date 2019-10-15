@@ -2,25 +2,6 @@
   (:require [clojure.test :refer :all]
             [scraper.config :refer :all]))
 
-(def config-src
-  {:list-page {
-     :url "https://www.page.com/searchresults.html"
-     :item-select "#search_results .item"}
-   :detail-page {
-     :url "https://www.page.com${url}"}})
-
-(def parsed-config
-  (parse-config config-src))
-
-(deftest test-parse-config
-  (testing "list url"
-    (is (= "https://www.page.com/searchresults.html"
-           (:url (:list-page parsed-config)))))
-  (testing "detail url"
-    (is (= "https://www.page.com${url}"
-           (:url (:detail-page parsed-config)))))
-  )
-
 (deftest test-item-selection
   (testing "item-select happy case"
     (is (some? (parse-config {:list-page {:url "https://page.com/searchresults.html"
