@@ -11,4 +11,5 @@
                   :main-opts   ["-m" "kaocha.runner" "unit"]}
            :it-test {:extra-paths ["test"]
                      :extra-deps  {lambdaisland/kaocha {:mvn/version "0.0-529"}}
-                     :main-opts   ["-m" "kaocha.runner" "integration"]}}}
+                     :main-opts   ["-m" "kaocha.runner" "integration"]}
+           :run {:main-opts ["-m" "scraper.websocket"]}}}

@@ -80,5 +80,7 @@
                   (w/on-close channel (fn [status] (println "client close it" status)))
                   (w/on-receive channel (fn [data] (receive-message data channel)))))
 
-(w/run-server handler {:port 8080}) ;TODO get port from config
+(defn -main []
+  (w/run-server handler {:port 8080})) ;TODO get port from config
+
 
