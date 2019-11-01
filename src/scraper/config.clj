@@ -1,5 +1,5 @@
 (ns scraper.config
-  (:require [hickory-css-selectors :as css])
+  (:require [hickory.css-selectors :as css])
   (:require [clojure.string :as string]))
 
 (defn- split-by-space [str]

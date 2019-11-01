@@ -1,7 +1,0 @@
-#kaocha/v1
-{:tests [{:id          :unit
-          :test-paths  ["test"]
-          :ns-patterns ["unit"]}
-         {:id          :integration
-          :test-paths  ["test"]
-          :ns-patterns ["integration"]}]}

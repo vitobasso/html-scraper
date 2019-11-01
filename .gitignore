@@ -1,8 +1,6 @@
+#leiningen
 target/
-out/
 .lein-*
-.nrepl-port
-.cpcache
 
 #intellij
 .idea

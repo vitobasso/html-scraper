@@ -2,11 +2,11 @@
   (:require [scraper.helper :as s])
   (:require [clojure.test :refer :all]))
 
-(deftest preconditions
+(deftest ^:remote preconditions
   (testing "internet connection"
     (is (some? (slurp "http://google.com")))))
 
-(deftest integration-test
+(deftest ^:remote integration-test
   (let [state (atom {})] ;the result of one test will be used by the other
 
   (testing "list"

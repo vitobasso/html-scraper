@@ -10,11 +10,11 @@ brew install leiningen
 #### Unit tests
 
 ```bash
-clj -Atest
+lein test
 ```
 
 #### Integration tests
 Will try to access the internet and scrape an actual website.
 ```bash
-clj -Ait-test
+lein test :integration
 ```
