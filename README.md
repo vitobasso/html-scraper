@@ -43,6 +43,8 @@ Ouptut:
  ... 
 ```
 
-There is a [reference document](doc/template-ref.md) about the template file.
+## Documentation
+- [Maintaining](doc/maintaining.md)
+- [Template reference](doc/template-ref.md)
 
 

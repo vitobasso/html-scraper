@@ -1,4 +1,10 @@
 
+# Setup
+
+```bash
+brew install leiningen
+```
+
 # Running tests
 
 #### Unit tests
