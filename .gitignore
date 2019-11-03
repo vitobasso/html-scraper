@@ -2,11 +2,6 @@
 target/
 .lein-*
 
-#shadow-cljs
-dist
-node_modules
-.shadow-cljs
-
 #intellij
 .idea
 *.iml

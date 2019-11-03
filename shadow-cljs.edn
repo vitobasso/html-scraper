@@ -1,9 +1,0 @@
-{:source-paths ["src"]
- :dependencies [[cljs-http "0.1.46"]
-                [com.github.vitobasso/hickory "node-SNAPSHOT"]
-                [com.github.vitobasso/hickory-css-selector "custom-for-papershop-SNAPSHOT" :exclusions [hickory]]]
- :npm-deps     {"js-yaml" "3.13.1"}
- :repositories {"jitpack" {:url "https://jitpack.io"}}
- :builds       {:browser {:target    :browser
-                          :output-dir "dist"
-                          :modules {:main {:entries [scraper.helper.helper]}}}}}
