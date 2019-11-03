@@ -1,13 +1,6 @@
-(ns scraper.helper.common
+(ns scraper.helper
   (:require [scraper.core :as s]
             [clojure.edn :as edn]))
-
-(defn path->name [path]
-  (let [[_ name] (re-find #"(\S+)\.ya?ml" path)]
-    name))
-
-(defn name->path [name]
-  (str name ".yml"))
 
 (defn parsed [val]
   (edn/read-string (str val)))
