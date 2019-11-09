@@ -2,21 +2,19 @@
   (:require [hickory.core :as h]
             [hickory.select :as s]
             [hickory.render :as r]
-            [clojure.string :as string]
-            #?(:cljs [goog.string :as gstring])))
+            [clojure.string :as string]))
 
 (defn trim-value [maybe-value]
   (if (some? maybe-value) (string/trim maybe-value)))
 
-(defn re-quote-replacement [s]
-  #?(:clj (string/re-quote-replacement s)
-     :cljs (gstring/regExpEscape s)))
+(defn escape-string-for-replacement [s]
+  (string/replace s #"([\\\$])" "\\\\$1"))
 
 (defn replace-var [str-template [key value]]
   (if (nil? value) str-template
     (let [pattern (re-pattern (str "\\$\\{" (name key) "\\}"))
-          literal-value (re-quote-replacement value)]
-      (string/replace str-template pattern literal-value))))
+          escaped-value (escape-string-for-replacement value)]
+      (string/replace str-template pattern escaped-value))))
 
 (defn replace-vars [str-template var-map]
   (reduce replace-var str-template var-map))
