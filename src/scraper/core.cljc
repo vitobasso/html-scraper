@@ -11,7 +11,7 @@
   (string/replace s #"([\\\$])" "\\\\$1"))
 
 (defn replace-var [str-template [key value]]
-  (if (nil? value) str-template
+  (if (not (string? value)) str-template
     (let [pattern (re-pattern (str "\\$\\{" (name key) "\\}"))
           escaped-value (escape-string-for-replacement value)]
       (string/replace str-template pattern escaped-value))))

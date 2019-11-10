@@ -23,6 +23,26 @@
   ;;TODO config missing :find or :replace
   )
 
+(deftest test-replace-var
+  (testing "replace a string"
+    (is (= "value"
+           (replace-var "${key}" [:key "value"]))))
+  (testing "value may contain special characters"
+    (is (= "special characters: $\\"
+           (replace-var "${key}" [:key "special characters: $\\"]))))
+  (testing "ignore a boolean"
+    (is (= "${key}"
+           (replace-var "${key}" [:key false]))))
+  (testing "ignore a number"
+    (is (= "${key}"
+           (replace-var "${key}" [:key 1]))))
+  (testing "ignore a list"
+    (is (= "${key}"
+           (replace-var "${key}" [:key ["hi"]]))))
+  (testing "ignore a map"
+    (is (= "${key}"
+           (replace-var "${key}" [:key {}])))))
+
 (deftest test-replace-vars
   (testing "replace two vars"
     (is (= "I love my cat too much"
@@ -52,10 +72,7 @@
            (replace-indexes "I love my ${1} and my ${2}" ["cat"]))))
   (testing "if nil values, do nothing"
     (is (= "I love my ${1} and my ${2}"
-           (replace-indexes "I love my ${1} and my ${2}" nil))))
-  (testing "value may contain a $"
-    (is (= "oh no, there's a $ in my string"
-           (replace-indexes "${1}" ["oh no, there's a $ in my string"])))))
+           (replace-indexes "I love my ${1} and my ${2}" nil)))))
 
 (deftest test-extract-value
   (testing "handles nil"
